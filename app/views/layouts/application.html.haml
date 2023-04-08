@@ -1,0 +1,25 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title MenuApp
+    %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = javascript_include_tag "application", "data-turbo-track": "reload", defer: true
+  %body
+    .container-fluid
+      %nav.navbar.navbar-expand-sm.navbar-light.bg-light
+        .container
+          %a.navbar-brand{:href => "/"} Lets eat
+          %button.navbar-toggler.d-lg-none{"aria-controls" => "collapsibleNavId", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#collapsibleNavId", "data-bs-toggle" => "collapse", :type => "button"}
+            %span.navbar-toggler-icon
+          #collapsibleNavId.collapse.navbar-collapse
+
+
+      - if flash[:notice]
+        .alert.alert-info= flash[:notice]
+      - if flash[:alert]
+        .alert.alert-info= flash[:alert]
+      = yield

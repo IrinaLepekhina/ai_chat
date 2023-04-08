@@ -1,0 +1,15 @@
+.env
+
+# Git
+.git
+.gitignore
+
+# Logs
+log/*
+
+# Temp files
+tmp/*
+
+# Editor temp files
+**/.vs
+**/.vscode
