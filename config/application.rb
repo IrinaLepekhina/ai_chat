@@ -33,5 +33,14 @@ module MenuDoc
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    # added
+    # Add the following line to autoload code from the 'lib' directory
+    config.autoload_paths << Rails.root.join('lib')
+
+    # setting the exception handling route to the same as the existing routes,
+    # more specific / customized error messages and handling exceptions
+    # config.exceptions_app = self.routes
+
   end
 end

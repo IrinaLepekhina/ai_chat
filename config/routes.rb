@@ -1,8 +1,20 @@
+#  https://guides.rubyonrails.org/routing.html
+
+# This file defines the routing configuration for the Rails application.
+# The `meals` resource is defined within the `api/v1` scope.
+
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+  root to: 'api/v1/welcome#index'
 
-  root to: 'welcome#index'
+  namespace :api do
+    scope module: :v1 do
+      get 'welcome/index'
+
+      resources :meals, only: %i[new], constraints: { format: 'html' }
+      resources :meals, only: %i[index create show], constraints: { format: 'json' }
+      resources :meals, only: %i[index create show], constraints: { format: 'html' }
+
+    end
+  end
 end

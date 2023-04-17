@@ -28,7 +28,10 @@ Rails.application.configure do
   config.action_controller.perform_caching = false
   config.cache_store = :null_store
 
+  # added
   # Raise exceptions instead of rendering exception templates.
+  # will allow errors and stack traces to be displayed, making it easier to debug
+  # for exception handling use true
   config.action_dispatch.show_exceptions = false
 
   # Disable request forgery protection in test environment.
