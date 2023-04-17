@@ -60,6 +60,8 @@ group :development do
   gem 'spring-watcher-listen'
 
   gem 'guard-rspec', require: false
+
+  gem 'yard'
 end
 
 group :test do
