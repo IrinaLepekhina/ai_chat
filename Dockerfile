@@ -1,4 +1,3 @@
-# Dockerfile for a Ruby on Rails web application
 FROM ruby:3.2
 LABEL maintainer="iralepekhina@gmail.com"
 
@@ -21,13 +20,10 @@ RUN apt-get update -yqq && apt-get install -yqq --no-install-recommends \
 nodejs \
 yarn
 
-# Copy the Gemfile and Gemfile.lock into the image and install the gems
 COPY Gemfile* /usr/src/app/
 WORKDIR /usr/src/app
 RUN bundle install
 
-# Copy the rest of the application code into the image
 COPY . /usr/src/app/
 
-# Set the default command for the container
 CMD ["bin/rails", "s", "-b", "0.0.0.0"]

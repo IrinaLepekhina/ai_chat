@@ -1,0 +1,6 @@
+= simple_form_for meal do |f|
+  = f.input :title, label: 'Title'
+  = f.input :price_type, collection: Meal.price_types.map{ |k,v| [k.split('_').join(' '), k ]}
+  = f.input :price_init, label: 'Price'
+  = f.input :description, label: 'Description'
+  = f.submit 'submit', class: 'btn btn-primary'
