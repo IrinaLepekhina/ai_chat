@@ -29,6 +29,9 @@ RUN bundle install
 # Copy the rest of the application code into the image
 COPY . /usr/src/app/
 
+# Precompile assets
+RUN bin/rails assets:precompile
+
 # Set the entrypoint for the container
 # Ensure Rails tmp/pids/server.pid was cleaned up
 ENTRYPOINT ["./docker-entrypoint.sh"]

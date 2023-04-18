@@ -13,6 +13,7 @@ require "action_text/engine"
 require "action_view/railtie"
 require "action_cable/engine"
 # require "rails/test_unit/railtie"
+require 'dotenv/rails' # Load environment variables from .env files.
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -35,12 +36,14 @@ module MenuDoc
     config.generators.system_tests = nil
 
     # added
-    # Add the following line to autoload code from the 'lib' directory
+    # Add additional load paths for your own custom dirs.
     config.autoload_paths << Rails.root.join('lib')
 
     # setting the exception handling route to the same as the existing routes,
     # more specific / customized error messages and handling exceptions
     # config.exceptions_app = self.routes
 
+    # Load environment variables from .env files.
+    Dotenv::Railtie.load
   end
 end
