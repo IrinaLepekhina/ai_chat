@@ -12,7 +12,7 @@ For JSON requests, the application sets the JWT token in the response header.
 #### Installation:
 ##### Clone the repository
 
-`$ git clone https://github.com/IrinaLepekhina/planta_chat.git'
+`$ git clone https://github.com/IrinaLepekhina/planta_chat.git`
 
 `$ cd planta_chat`
 
