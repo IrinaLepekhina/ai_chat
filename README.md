@@ -2,7 +2,7 @@
 
 This is a simple Ruby on Rails web application that includes a Dockerfile for easy deployment. It includes JSON and HTML support for:
 - ProductsController that handles requests related to products, with endpoints for creating, listing, and retrieving products.
-- UsersController that handles requests related to user#login.
+- UsersController that handles requests related to user signup.
 - AuthenticationController that handles user authentication.
 
 
@@ -14,7 +14,7 @@ For JSON requests, the application sets the JWT token in the response header.
 
 `$ git clone https://github.com/IrinaLepekhina/planta_chat.git'
 
-`$ cd planta_doc`
+`$ cd planta_chat`
 
 
 ##### Create the .env file with the necessary environment variables
@@ -30,15 +30,13 @@ For JSON requests, the application sets the JWT token in the response header.
 
 ##### Start the containers
 
-- this way
+- build by yourself
 
-`$ docker compose -f docker-stack.yml up -d`
+`$ docker compose up -d`
 
-- or another simular result way
+- or pull prebuilt from any repo with simular result (docker / git repository)
 
-`$ docker pull ghcr.io/irinalepekhina/planta_chat:prod`
-
-`$ docker compose -f docker-stack-git.yml up -d`
+`$ docker compose -f docker-stack.yml up -d` or `$ docker compose -f docker-stack-git.yml up -d`
 
 ##### Create the database and run migrations
 
