@@ -30,13 +30,7 @@ For JSON requests, the application sets the JWT token in the response header.
 
 ##### Start the containers
 
-- build by yourself
-
-`$ docker compose up -d`
-
-- or pull prebuilt from any repo with simular result (docker / git repository)
-
-`$ docker compose -f docker-stack.yml up -d` or `$ docker compose -f docker-stack-git.yml up -d`
+`$ docker compose -f docker-stack-git.yml up -d`
 
 ##### Create the database and run migrations
 
