@@ -1,1 +1,12 @@
+-# app/views/api/v1/welcome/index.html.haml
+
+-# This section adds a JavaScript snippet that enhances the page
+-# by appending "ENHANCED!" to the first <h1> element and logging
+- content_for :head do
+  :javascript
+    document.addEventListener("DOMContentLoaded", function() {
+      document.getElementsByTagName('h1')[0].append(' ENHANCED!');
+      console.log(26666)
+    })
+
 %h1 This page has been viewed #{pluralize(@page_hits, 'time')} !
