@@ -1,9 +1,9 @@
-class NewMealForm
+class NewProductForm
   include Capybara::DSL
 
   def visit_page
     visit('/')
-    click_on('create new meal')
+    click_on('Create new product')
     self
   end
 

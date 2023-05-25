@@ -1,7 +1,7 @@
-# Migration to create the meals table
-class CreateMeals < ActiveRecord::Migration[7.0]
+# Migration to create the products table
+class CreateProducts < ActiveRecord::Migration[7.0]
   def change
-    create_table :meals do |t|
+    create_table :products do |t|
       t.string :title, null: false
       t.integer :price_type
       t.text :description
@@ -11,6 +11,6 @@ class CreateMeals < ActiveRecord::Migration[7.0]
     end
 
     # Add unique index to title column
-    add_index :meals, :title, unique: true
+    add_index :products, :title, unique: true
   end
 end

@@ -1,0 +1,6 @@
+%h1
+
+= simple_form_for :auth_params, url: api_login_path, method: :post do |f|
+  = f.input :email, label: 'email'
+  = f.input :password, label: 'password'
+  = f.submit 'GO', class: 'btn btn-primary'

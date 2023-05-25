@@ -1,6 +1,0 @@
-%table
-  %tr
-    %th meals
-  - @meals.each do |meal|
-    %tr
-      %td= link_to meal.title, api_meal_path(meal)

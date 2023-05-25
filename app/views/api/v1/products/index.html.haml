@@ -1,0 +1,6 @@
+%table
+  %tr
+    %th products
+  - @products.each do |product|
+    %tr
+      %td= link_to product.title, api_product_path(product)

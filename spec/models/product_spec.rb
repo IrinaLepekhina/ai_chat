@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Meal, type: :model do
-  subject { build(:meal) }
+RSpec.describe Product, type: :model do
+  subject { build(:product) }
 
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:price_type) }

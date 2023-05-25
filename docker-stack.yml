@@ -3,9 +3,10 @@ version: '3.8'
 services:
 
   web:
-    image: irinalepekhina/menu_web:prod
+    image: irinalepekhina/planta_web:prod
     ports:
       - "3000:3000"
+      - "4000:4000"
     volumes:
       - .:/usr/src/app
     env_file:
@@ -20,6 +21,13 @@ services:
       - .env
     volumes:
       - db_data:/var/lib/postgresql/data
+
+  selenium_chrome:
+    image: selenium/standalone-chrome-debug
+    logging:
+      driver: none
+    ports:
+    - "5900:5900"
 
 volumes:
   db_data:
