@@ -30,6 +30,9 @@ gem 'rouge'
 gem 'nokogiri'
 
 gem 'redis'
+gem 'openai'
+gem 'ruby-openai'
+gem 'cosine-similarity'
 
 # good gems:
 # gem letter_opener

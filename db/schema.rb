@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_10_042947) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_26_032751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,6 +19,22 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_10_042947) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["title"], name: "index_categories_on_title", unique: true
+  end
+
+  create_table "chat_entries", force: :cascade do |t|
+    t.bigint "conversation_id", null: false
+    t.text "content"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_chat_entries_on_conversation_id"
+  end
+
+  create_table "conversations", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_conversations_on_user_id"
   end
 
   create_table "products", force: :cascade do |t|
@@ -42,4 +58,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_10_042947) do
     t.index ["nickname"], name: "index_users_on_nickname", unique: true
   end
 
+  add_foreign_key "chat_entries", "conversations"
+  add_foreign_key "conversations", "users"
 end

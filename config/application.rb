@@ -38,6 +38,7 @@ module MenuDoc
     # added
     # Add additional load paths for your own custom dirs.
     config.autoload_paths << Rails.root.join('lib')
+    config.autoload_paths << Rails.root.join('components')
 
     # setting the exception handling route to the same as the existing routes,
     # more specific / customized error messages and handling exceptions
