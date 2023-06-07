@@ -9,6 +9,16 @@ This is a simple Ruby on Rails web application that includes a Dockerfile for ea
 For HTML requests, the application sets the JWT token as a signed cookie.
 For JSON requests, the application sets the JWT token in the response header.
 
+##### AI Integration Component
+A new AI Integration Component has been added to the application, allowing integration with AI services. It utilizes the ConversationAiHandler and OpenAiService classes to generate AI responses based on conversations and content.
+
+- AiIntegrationComponent: Provides integration with AI services.
+- ConversationAiHandler: Handles AI-based conversation processing.
+- OpenAiService: Interacts with the OpenAI API for AI responses and text embeddings.
+
+##### CsvStorageService
+The CsvStorageService is a service class that encapsulates the functionality to store and retrieve embeddings in a CSV file, extending the StorageService class. It provides an encapsulated and modular approach to handle storage operations, allowing flexibility to switch to different storage mechanisms in the future.
+
 #### Installation:
 ##### Clone the repository
 
@@ -26,6 +36,8 @@ For JSON requests, the application sets the JWT token in the response header.
 `$ echo "POSTGRES_DB='planta_doc_development'" >> .env`
 
 `$ echo "DATABASE_HOST='database'" >> .env`
+
+`$ echo "OPENAI_API_KEY='replace_with_your_key'" >> .env`
 
 
 ##### Start the containers

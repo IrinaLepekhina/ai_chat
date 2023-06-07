@@ -9,6 +9,8 @@ require 'support/factory_bot'
 require_relative './support/capybara.rb'
 
 Dir[Rails.root.join('spec/components/**/*.rb')].sort.each { |file| require file }
+Dir[Rails.root.join('spec/lib/**/*.rb')].sort.each { |file| require file }
+Dir[Rails.root.join('spec/services/**/*.rb')].sort.each { |file| require file }
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
