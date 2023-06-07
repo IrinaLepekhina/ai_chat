@@ -1,23 +1,21 @@
 # app/components/ai_integration_component.rb
+
+# The AiIntegrationComponent class provides an integration point for AI services in the application.
+# It utilizes the ConversationAiHandler to generate AI responses based on conversations and content.
 class AiIntegrationComponent
+  def initialize
+    @openai_service = OpenAiService.new
+    @cosine_similarity_service = CosineSimilarityService.new
 
-  def generate_ai_response(similarity_text, content) 
-    prompt = "You are an AI assistant. You work for Sterling Parts which is a car parts online store located in Australia.
-              You will be asked questions from a customer and will answer in a helpful and friendly manner.
-              
-              You will be provided company information from Sterling Parts under the [Article] section. The customer question
-              will be provided under the [Question] section. You will answer the customer's questions based on the article.
-              If the user's question is not answered by the article, you will respond with 'I'm sorry, I don't know.'
-              
-              [Article]
-              #{similarity_text}
-              
-              [Question]
-              #{question}"
+    # Instantiate the CSV storage service with the path to the embeddings CSV file
+    @csv_storage_service = CsvStorageService.new("#{Rails.root}/app/data/embeddings.csv")
 
-    ai_response = OpenAIService.generate_ai_response(prompt)
-  
-    ai_response
+    # Instantiate the ConversationAiHandler with the required services
+    @conversation_ai_handler = ConversationAiHandler.new(@openai_service, @cosine_similarity_service, @csv_storage_service)
+  end
 
+  # Delegate the generation of the AI response to the ConversationAiHandler
+  def generate_ai_response(conversation, content)
+    @conversation_ai_handler.generate_ai_response(content)
   end
 end

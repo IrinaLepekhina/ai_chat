@@ -12,26 +12,36 @@ RSpec.describe 'ChatEntries API', type: :request do
       allow(AiIntegrationComponent).to receive(:new).and_return(ai_integration_component)
       allow(ai_integration_component).to receive(:generate_ai_response).and_return('Response') 
     end
- 
-    before do
-      post api_conversation_chat_entries_path(conversation.id), 
-      params: { content: content, conversation: conversation }, 
-      headers: { "Accept" => "application/json", "Authorization" => "Bearer #{auth_token}" }, as: :json
-    end
 
-    it 'creates a new chat entry, generates a response, and returns a JSON response' do
-      expect(response).to have_http_status(:created)
-      response_body = JSON.parse(response.body)
-      expect(response_body['response']).to be_present
-      expect(ChatEntry.count).to eq(1)
-    end  
+    context 'valid data' do
+      before do
+        post api_conversation_chat_entries_path(conversation.id), 
+        params: { content: content, conversation: conversation }, 
+        headers: { "Accept" => "application/json", "Authorization" => "Bearer #{auth_token}" }, as: :json
+      end
+  
+      it 'creates a new chat entry, generates a response, and returns a JSON response' do
+        expect(response).to have_http_status(:created)
+        response_body = JSON.parse(response.body)
+        expect(response_body['response']).to be_present
+        expect(ChatEntry.count).to eq(1)
+      end  
+    end
  
-    # it 'returns an error JSON response for invalid parameters' do
-    #   post '/api/v1/chat_entries', params: { conversation_id: conversation.id, chat_entry: { content: '' } }
-    #   expect(response).to have_http_status(:unprocessable_entity)
-    #   response_body = JSON.parse(response.body)
-    #   expect(response_body['error']).to be_present
-    #   expect(ChatEntry.count).to eq(0)
-    # end
+    
+    context 'invalid data' do
+      before do
+        post api_conversation_chat_entries_path(conversation.id), 
+        params: { content: '', conversation: conversation },  
+        headers: { "Accept" => "application/json", "Authorization" => "Bearer #{auth_token}" }, as: :json
+      end
+
+      it 'returns an error JSON response for invalid parameters' do
+        expect(response).to have_http_status(:unprocessable_entity)
+        response_body = JSON.parse(response.body)
+        expect(response_body['error']).to be_present
+        expect(ChatEntry.count).to eq(0)
+      end
+    end
   end
 end 

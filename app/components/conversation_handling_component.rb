@@ -7,17 +7,14 @@ class ConversationHandlingComponent
     @ai_integration_component = ai_integration_component
   end
 
-  # Processes a chat entry in a conversation and generates a response using the AI integration component.
-  #
-  # @param conversation [Conversation] The conversation object.
-  # @param content [String] The content of the chat entry.
-  # @return [String] The generated response from the AI integration component.
   def process_chat_entry(conversation, content)
-    response = @ai_integration_component.generate_ai_response(conversation, content)
-    response
+    # Check if the content is blank
+    if content.blank?
+      return "How can I help you?"
+    else
+      # Generate an AI response using the AI integration component
+      response = @ai_integration_component.generate_ai_response(conversation, content)
+      return response
+    end
   end
 end
-
-
-# # Save AI response
-# ai_response = AIResponse.create(conversation: conversation, response: response)

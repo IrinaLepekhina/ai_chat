@@ -24,10 +24,9 @@ module Api
         
         # Instantiate the ConversationHandlingComponent
         conversation_handler = ConversationHandlingComponent.new(AiIntegrationComponent.new)
-        
         # Process user message and generate response
-        response_ai = conversation_handler.process_chat_entry(@conversation, params[:conversation][:message])
-        
+
+        response_ai = conversation_handler.process_chat_entry(@conversation, params.dig(:conversation, :chat_entries_attributes, 0, :content))
         # Render the response
         respond_to do |format|
           format.json { json_response({ response_ai: response_ai, message: Message.record_created }, :created) }

@@ -5,6 +5,7 @@ class ChatEntry < ApplicationRecord
   belongs_to :conversation
 
   validates :conversation, presence: true
+  validates :content, presence: true
 
   def user
     conversation.user

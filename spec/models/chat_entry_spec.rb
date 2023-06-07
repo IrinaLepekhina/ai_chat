@@ -7,6 +7,7 @@ RSpec.describe ChatEntry, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:conversation).with_message("must exist") }
+    it { is_expected.to validate_presence_of(:content).with_message("can't be blank") }
   end
 
   describe '#user' do
