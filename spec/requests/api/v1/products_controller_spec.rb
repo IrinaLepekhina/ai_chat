@@ -1,18 +1,20 @@
 require 'rails_helper'
 
-RSpec.describe Api::V1::ProductsController do
+describe Api::V1::ProductsController do
+  let(:user) { create(:user) }
+  let(:headers_json) { { "Accept" => "application/json" } }
+  let(:headers_html) { { "Accept" => "text/html" } }
+
+  before do
+    allow_any_instance_of(ApiController).to receive(:authorize_request).and_return(user)
+  end
   
   context "when requesting HTML format" do
-    
     describe "GET index" do
-      before do
-        @user = create(:user)
-        @auth_token = AuthenticateUser.new(@user.email, @user.password).call.last
-      end
       let!(:product) { create(:per_unit_product) }
       
       before do
-        get '/api/products', headers: { "Accept" => "text/html", "Authorization" => @auth_token }
+        get '/api/products', headers: headers_html
       end
       
       it 'renders :index template, with status 200' do
@@ -29,17 +31,11 @@ RSpec.describe Api::V1::ProductsController do
 
   context "when requesting JSON format" do
     describe "GET index" do
-
-      before do
-        @user = create(:user)
-        @auth_token = AuthenticateUser.new(@user.email, @user.password).call.last
-      end
-      
       it 'sends products, with status 200' do
         by_weight_product = create(:by_weight_product, title: 'la ensalsda Mexicana')
         per_unit_product = create(:per_unit_product)
 
-        get '/api/products', params: {}, headers: { "Accept" => "application/json", "Authorization" => @auth_token}
+        get '/api/products', params: {}, headers: headers_json
         expect(response).to have_http_status(:ok)
 
         json = response.parsed_body
