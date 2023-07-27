@@ -56,6 +56,6 @@ class AuthorizeApiRequest
 
   def missing_token_error
     # Raise error if token is missing in both header and cookies
-    raise(ExceptionHandler::MissingToken, Message.missing_token)
+    raise(ExceptionHandler::AuthenticationError, Message.unauthorized)
   end
 end

@@ -3,7 +3,7 @@ class NewUserForm
 
   def visit_page
     visit('/')
-    click_on('New User')
+    click_on('Register')
     self
   end
 

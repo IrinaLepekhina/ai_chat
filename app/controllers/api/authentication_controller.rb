@@ -2,6 +2,7 @@
 module Api
   # The AuthenticationController handles user authentication.
   class AuthenticationController < ApiController
+    # # def sign_out_user
     include AuthenticationHelper
 
     # Skip CSRF token verification for the login action
