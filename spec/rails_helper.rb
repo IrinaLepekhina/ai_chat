@@ -7,6 +7,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'rspec/rails'
 require 'support/factory_bot'
 require_relative './support/capybara.rb'
+require 'database_cleaner'
 
 Dir[Rails.root.join('spec/components/**/*.rb')].sort.each { |file| require file }
 Dir[Rails.root.join('spec/lib/**/*.rb')].sort.each { |file| require file }
@@ -78,6 +79,17 @@ RSpec.configure do |config|
     Capybara.server_host = "0.0.0.0"
     Capybara.server_port = 4000
     Capybara.app_host = 'http://web:4000'
+  end
+
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
   end
 end
 
