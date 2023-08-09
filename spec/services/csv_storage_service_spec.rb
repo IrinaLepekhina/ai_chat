@@ -5,8 +5,7 @@ require 'rails_helper'
 #   allow(csv_storage_service).to receive(:read_embeddings_from_csv).and_return(embeddings)
 # end
 
-RSpec.describe CsvStorageService do
-  # let(:csv_path) { "#{Rails.root}/app/data/embeddings.csv" }
+describe CsvStorageService, type: :service do
   let(:csv_path) { "#{Rails.root}/spec/fixtures/embeddings.csv"}
   let(:csv_storage_service) { CsvStorageService.new(csv_path) }
 
@@ -33,9 +32,9 @@ RSpec.describe CsvStorageService do
     end
   end
 
-  describe '#find_text_at_index' do
-    it 'returns the text at the specified index' do
-      expect(csv_storage_service.find_text_at_index(1)).to eq('Example Text 2')
+  describe '#find_text_at_text_id' do
+    it 'returns the text at the specified text_id' do
+      expect(csv_storage_service.find_text_at_text_id(1)).to eq('Example Text 2')
     end
   end
 end

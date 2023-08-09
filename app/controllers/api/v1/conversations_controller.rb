@@ -1,45 +1,54 @@
-# app/controllers/conversations_controller.rb
+# app/controllers/api/v1/conversations_controller.rb
+
 module Api
   module V1
     # Controller for managing conversations.
     class ConversationsController < ApiController
-      def index
-        @conversations = Conversation.all
-
-        render json: { conversations: @conversations }
-      end
-    
-      def show
-        @conversation = Conversation.find(params[:id])
-        render json: { conversation: @conversation }
-      end
-
-      # POST /api/v1/conversations
-      # @return The response with the generated AI response.
       def create
-        # Create a new conversation
-        @conversation = Conversation.new(conversation_params)
+        @conversation = Conversation.create(user_id: current_user.id)
 
-        return unless @conversation.save!
-        
-        # Instantiate the ConversationHandlingComponent
-        conversation_handler = ConversationHandlingComponent.new(AiIntegrationComponent.new)
-        # Process user message and generate response
-
-        response_ai = conversation_handler.process_chat_entry(@conversation, params.dig(:conversation, :chat_entries_attributes, 0, :content))
-        # Render the response
         respond_to do |format|
-          format.json { json_response({ response_ai: response_ai, message: Message.record_created }, :created) }
+          format.html { redirect_to api_conversation_url(@conversation) }
+          format.json { json_response( @conversation, :created) }
+        end
+      end
+      
+      def show
+        @conversation     = Conversation.find(params[:id])
+        @chat_entry       = @conversation.chat_entries.build
+        @chat_entries     = @conversation.chat_entries.order(created_at: :asc).page(params[:page]).per(4)
+
+        last_chat_entry = @chat_entries.last
+        if last_chat_entry && last_chat_entry.ai_response
+          @original_text_id = last_chat_entry.ai_response.original_text_id
+        end
+
+        respond_to do |format|
+          format.html { render :show }
+          format.json { json_response( @conversation, :found) }
         end
       end
 
-      private
-      
-      def conversation_params
-        params.require(:conversation).permit(
-          :user_id,
-          chat_entries_attributes: [:content, :_destroy]
-        )
+      def index
+        @conversations = Conversation.page(params[:page]).per(10)
+
+        respond_to do |format|
+          format.html
+          format.json { json_response( @conversations, :found ) }
+        end
+      end
+
+      def destroy
+        @conversation = Conversation.find(params[:id])
+    
+        if @conversation.destroy
+          respond_to do |format|
+            format.html { redirect_to api_conversations_url, notice: 'Conversation has been destroyed' }
+            format.json { render json: 'Conversation has been destroyed'}
+          end
+        else
+          redirect_to api_conversation_url(@conversation), notice: "Cannot delete conversation"
+        end
       end
     end
   end

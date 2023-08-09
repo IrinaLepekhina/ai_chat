@@ -1,0 +1,5 @@
+-# app/views/api/v1/chat_entries/_form.html.haml
+
+= simple_form_for [@conversation, @chat_entry], url: api_conversation_chat_entries_path(@conversation) do |f|
+  = f.input  :content, label: 'i want to ask',   id: 'content-field', required: true
+  = f.submit 'submit', class: 'btn btn-primary', id: 'submit-button'

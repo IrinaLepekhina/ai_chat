@@ -7,7 +7,6 @@ Rails.application.routes.draw do
 
   root to: 'api/v1/welcome#index'
   
-
   namespace :api do
     get  'login', to: 'authentication#new'
     post 'login', to: 'authentication#login', constraints: { format: /(json|html)/ }
@@ -25,8 +24,8 @@ Rails.application.routes.draw do
       resources :users, only: %i[new], constraints: { format: 'html' }
       resources :users, only: %i[create], constraints: { format: /(json|html)/ }
 
-      resources :conversations, only: %i[index create show] do
-        resources :chat_entries, only: %i[create], constraints: { format: :json }
+      resources :conversations, only: %i[create index show destroy] do
+        resources :chat_entries, only: %i[create], constraints: { format: /(json|html)/ }
       end
     end
   end

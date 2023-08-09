@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_26_032150) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_20_185010) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ai_responses", force: :cascade do |t|
+    t.text "content"
+    t.text "original_text_id"
+    t.bigint "conversation_id"
+    t.bigint "chat_entry_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chat_entry_id"], name: "index_ai_responses_on_chat_entry_id"
+    t.index ["conversation_id"], name: "index_ai_responses_on_conversation_id"
+  end
 
   create_table "categories", force: :cascade do |t|
     t.string "title", comment: "category title"
@@ -27,6 +38,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_032150) do
     t.datetime "sent_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "ai_response_id"
+    t.index ["ai_response_id"], name: "index_chat_entries_on_ai_response_id"
     t.index ["conversation_id"], name: "index_chat_entries_on_conversation_id"
   end
 
@@ -58,6 +71,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_032150) do
     t.index ["nickname"], name: "index_users_on_nickname", unique: true
   end
 
+  add_foreign_key "ai_responses", "chat_entries"
+  add_foreign_key "ai_responses", "conversations"
+  add_foreign_key "chat_entries", "ai_responses"
   add_foreign_key "chat_entries", "conversations"
   add_foreign_key "conversations", "users"
 end
