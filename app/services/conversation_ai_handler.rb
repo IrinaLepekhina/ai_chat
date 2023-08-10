@@ -3,69 +3,46 @@
 # The ConversationAiHandler class handles AI-based conversation processing.
 # Generates an AI response based on the provided content.
 class ConversationAiHandler
-  def initialize(openai_service, cosine_similarity_service, csv_storage_service)
-    @openai_service = openai_service
-    @cosine_similarity_service = cosine_similarity_service
-    @csv_storage_service = csv_storage_service
+  def initialize(language_service, vector_similarity_service, redis_storage_service)
+    @language_service = language_service
+    @vss = vector_similarity_service
+    @redis = redis_storage_service
   end
 
   def generate_ai_response(content)
-    # Get the embedding for the provided content
-    question_embedding = @openai_service.get_embeddings(content)
+    question_embedding = 
+      @language_service.get_embeddings(content)   #JSON.parse(File.read('spec/fixtures/question_embedding.json')) 
+
+    store_query_in_redis(question_embedding, content)
     
-    # Find the most similar text based on the question embedding
-    original_text = find_most_similar_text(question_embedding)
+    original    = find_most_similar_text_and_text_id(question_embedding)
+    ai_response = generate_ai_response_from_prompt(original[:text], content)
     
-    # Generate the prompt using the original text and content
-    prompt = generate_prompt(original_text, content)
-    
-    # Generate an AI response based on the prompt
-    ai_response = @openai_service.generate_response(prompt)
-    
-    ai_response
+    { content: ai_response, original_text_id: original[:text_id] }
   end
   
   private
-
-  def find_most_similar_text(question_embedding)
-    # Retrieve the embeddings from the storage service
-    embeddings = @csv_storage_service.retrieve_embeddings
-    
-    # Calculate the similarity between the question embedding and each text embedding
-    similarity_array = embeddings.map do |text_embedding|
-      calculate_similarity(question_embedding, text_embedding)
-    end
-    
-    # Find the index of the maximum similarity
-    index_of_max = find_index_of_max_similarity(similarity_array)
-    
-    # Find the original text at the corresponding index
-    original_text = find_text_at_index(index_of_max)
-
-    original_text
+  
+  def store_query_in_redis(question_embedding, content)
+    query_vector = { "text_id": "chat_entry_content", "text_vector": question_embedding, "content": content }
+    @redis.set_query(query_vector)
   end
 
-  def calculate_similarity(embedding1, embedding2)
-    # Calculate the cosine similarity between two embeddings using the similarity service
-    @cosine_similarity_service.calculate_similarity(embedding1, embedding2)
+  def find_most_similar_text_and_text_id(question_embedding)
+    @vss.query_original_text(question_embedding)
   end
   
-  def find_index_of_max_similarity(similarity_array)
-    # Find the index of the maximum value in the similarity array
-    similarity_array.index(similarity_array.max)
-  end
-  
-  def find_text_at_index(index)
-    # Find the text at the specified index in the storage service
-    @csv_storage_service.find_text_at_index(index)
+  def generate_ai_response_from_prompt(original_text, content)
+    prompt = generate_prompt(original_text, content)
+    @language_service.generate_response(prompt)   # 'Hi, there'
   end
   
   def generate_prompt(original_text, content)
-    <<~PROMPT
-      You are an AI assistant. You work for Planta_Tony which is a water store located in Guadalajara.
+     <<~PROMPT
+      You are an AI assistant. You work for Planta_chat which is a factory located in city N.
       You will be asked questions from a customer and will answer in a helpful and friendly manner.
 
-      You will be provided company information from Planta_Tony under the [Article] section. The customer question
+      You will be provided company information  under the [Article] section. The customer question
       will be provided under the [Content] section. You will answer the customer's questions based on the article.
       If the user's question is not answered by the article, you will respond with "I'm sorry, I don't know."
 

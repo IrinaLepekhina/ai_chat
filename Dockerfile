@@ -33,5 +33,9 @@ COPY . /usr/src/app/
 # Ensure Rails tmp/pids/server.pid was cleaned up
 ENTRYPOINT ["./docker-entrypoint.sh"]
 
+# Install RedisAI CLI
+RUN apt-get update -yqq && apt-get install -yqq --no-install-recommends \
+    redis-tools
+     
 # Set the default command for the container
 CMD ["bin/rails", "s", "-b", "0.0.0.0"]

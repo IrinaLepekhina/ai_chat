@@ -1,0 +1,7 @@
+-# app/views/api/v1/chat_entries/_chat_entry.html.haml
+
+.card.mt-2
+  .card-body
+    %h5.card-title= chat_entry.content.capitalize
+    %p.card-text= chat_entry.ai_response&.content&.capitalize
+    %p.card-text= chat_entry.ai_response&.original_text_id

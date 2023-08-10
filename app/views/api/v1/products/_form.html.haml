@@ -1,4 +1,6 @@
-= simple_form_for product do |f|
+-# app/views/api/v1/products/_form.html.haml
+
+= simple_form_for [:api, product] do |f|
   = f.input :title, label: 'Title'
   = f.input :price_type, collection: Product.price_types.map{ |k,v| [k.split('_').join(' '), k ]}
   = f.input :price_init, label: 'Price'

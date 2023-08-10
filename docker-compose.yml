@@ -14,7 +14,16 @@ services:
       - .env
 
   redis:
-    image: redis
+    image: redis/redis-stack:latest 
+    ports:
+      - "6379:6379"
+  
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    ports:
+      - '8001:8001'
+    volumes:
+      - redisinsight_data:/db
 
   database:
     image: postgres
@@ -32,3 +41,4 @@ services:
 
 volumes:
   db_data:
+  redisinsight_data:

@@ -1,8 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe ChatEntry, type: :model do
+describe ChatEntry, type: :model do
   describe 'associations' do
     it { is_expected.to belong_to(:conversation) }
+    it { is_expected.to have_one(:ai_response).dependent(:nullify) }
   end
 
   describe 'validations' do

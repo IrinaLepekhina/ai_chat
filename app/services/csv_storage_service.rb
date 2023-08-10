@@ -27,9 +27,9 @@ class CsvStorageService < StorageService
     end
   end
 
-  def find_text_at_index(index)
-    # Read the CSV file with headers and find the text at the specified index
-    CSV.read(@csv_path, headers: true)[index]['text']
+  def find_text_at_text_id(text_id)
+    # Read the CSV file with headers and find the text at the specified text_id
+    CSV.read(@csv_path, headers: true)[text_id]['text']
   end
 
   private

@@ -1,0 +1,23 @@
+How can I get my products?
+Ordering: Let's talk and create an order.
+In-store: Come visit our factory store.
+
+What products do you have?
+We've got it all!
+Product 1: [Brief description of product 1].
+Product 2: [Product 2 description].
+Product 3: [Product 3 description. But it is not a product; it is a service]
+
+Our stores are located in [Colonia_1] and [Colonia_2].
+Store 1:
+Address: [Address for store 1].
+How to Get There: [Directions or landmarks].
+Contacts: [Contact information for store 1].
+Store 2:
+Address: [Address for store 2].
+How to Get There: [Directions or landmarks].
+Contacts: [Contact information for store 2].
+
+Our delivery is fast and efficient.
+Orders placed before 12 PM will be delivered promptly.
+No worries if you order after 12 PM; we'll still deliver quickly.

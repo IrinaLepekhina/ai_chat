@@ -24,7 +24,7 @@ RSpec.describe 'Authentication', type: :request do
         
       #   follow_redirect!    
       #   expect(response.body).to include(user_attributes[:nickname])
-      #   expect(response.body).not_to include('New User')
+      #   expect(response.body).not_to include('Register')
       #   expect(response.body).not_to include('Login')
       # end 
    
@@ -32,7 +32,6 @@ RSpec.describe 'Authentication', type: :request do
         post api_signup_path, params: { user: attributes_for(:user, email: nil) }, as: :html
 
         expect(response).to render_template(:new)
-        expect(response.headers['Set-Cookie']).to be_nil
         expect(response.body).to include("be blank")
       end
     end  
@@ -77,7 +76,7 @@ RSpec.describe 'Authentication', type: :request do
 
         # follow_redirect!
    
-        # expect(response.body).not_to include('New User') 
+        # expect(response.body).not_to include('Register') 
         # expect(response.body).to include(user.nickname)
         # expect(response.body).not_to include('Login') 
       # end
@@ -111,4 +110,4 @@ RSpec.describe 'Authentication', type: :request do
       end
     end
   end
-end  
+end

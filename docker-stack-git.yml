@@ -1,3 +1,4 @@
+# docker-stack-git.yml
 version: '3.8' 
 
 services:
@@ -13,7 +14,9 @@ services:
       - .env
 
   redis:
-    image: redis
+    image: redis/redis-stack:latest 
+    ports:
+      - "6379:6379"
 
   database:
     image: postgres

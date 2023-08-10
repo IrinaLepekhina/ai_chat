@@ -18,8 +18,6 @@ gem 'bootsnap', require: false
 gem 'bcrypt'
 gem 'jwt'
 
-# gem 'redcarpet', github: "vmg/redcarpet", branch: "master"
-gem 'carrierwave' # uploader
 gem 'simple_form'
 gem 'haml'
 gem 'haml-rails'
@@ -32,10 +30,15 @@ gem 'nokogiri'
 gem 'redis'
 gem 'openai'
 gem 'ruby-openai'
+gem 'enumerize' 
+gem 'redi_search' 
 
 # good gems:
 # gem letter_opener
 # gem email-spec
+# gem 'rack-attack'
+# gem 'redcarpet', github: "vmg/redcarpet", branch: "master"
+# gem 'carrierwave' # uploader
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -71,6 +74,8 @@ group :test do
   gem 'database_cleaner'
   gem 'selenium-webdriver'
   gem 'webdrivers'
+  gem 'faker'
+  gem 'database_cleaner'
 end
 
 group :production do

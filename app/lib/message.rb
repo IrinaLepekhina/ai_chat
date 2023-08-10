@@ -62,4 +62,16 @@ module Message
   def self.invalid_authenticity_token
     'Invalid authenticity token'
   end
+
+  def self.insufficient_quota(message)
+    "Sorry, #{message[:message]}"
+  end
+
+  def self.connection_failed(message)
+    "Check your internet connection, #{message[:message]}"
+  end
+
+  def self.try_again_later
+    'An error occurred while processing your request. Please try again later.'
+  end
 end

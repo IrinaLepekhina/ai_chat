@@ -1,0 +1,16 @@
+-# app/views/api/v1/conversations/index.html.haml
+
+= paginate @conversations, remote: true
+
+%h1 Conversations
+%table.table.table-striped.table-light.mt-5
+  %thead
+    %tr
+      %th ID
+      %th Created At
+  %tbody
+  - @conversations.each do |conversation|
+    %tr.mx-5
+      %td= link_to conversation.id,  api_conversation_path(conversation)
+      %td= conversation.created_at
+      %td= button_to 'delete', api_conversation_path(conversation), method: :delete, class: "nav-link btn btn-link"

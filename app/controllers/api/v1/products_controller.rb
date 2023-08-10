@@ -16,14 +16,9 @@
 module Api
   module V1
     class ProductsController < ApiController
-      skip_before_action :authorize_request, only: [:show, :index], raise: false
-      # http_basic_authenticate_with name: 'user25@email', password: 'qwerty'
 
-      # GET /api/products
-      # GET /api/products.json
-      # GET /api/products.html
       def index
-        @products = Product.all
+        @products = Product.page(params[:page]).per(10)
 
         respond_to do |format|
           format.html
@@ -31,9 +26,6 @@ module Api
         end
       end
 
-      # GET /api/products/1
-      # GET /api/products/1.json
-      # GET /api/products/1.html
       # raise Excaptionable::RecordNotFound, Message.not_found, status::redirected
       def show
         @product = Product.find(params[:id])
@@ -43,15 +35,10 @@ module Api
         end
       end
 
-      #GET /api/products/new
-      #GET /api/products/new.html
       def new
         @product = Product.new
       end
 
-      # POST /api/products
-      # POST /api/products.json
-      # POST /api/products.html
       # raise Excaptionable::RecordInvalid, Message.invalid, status: :unprocessable_entity)
       def create
         @product = Product.new(product_params)

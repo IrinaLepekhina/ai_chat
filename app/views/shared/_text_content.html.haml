@@ -1,0 +1,6 @@
+-# app/views/shared/_text_content.html.haml
+
+- parsed_content = JSON.parse(content)
+.container
+  %h3= title
+  %p= simple_format(parsed_content['content'])
