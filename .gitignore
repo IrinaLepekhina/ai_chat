@@ -15,6 +15,11 @@
 
 /public/*
 
+# Include JSON files in the public/texts/json directory
+!/public/texts/json/
+/public/texts/json/*
+!/public/texts/json/.keep
+
 # Ignore pidfiles, but keep the directory.
 /tmp/pids/*
 !/tmp/pids/
