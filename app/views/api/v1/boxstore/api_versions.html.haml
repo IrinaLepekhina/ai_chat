@@ -1,0 +1,9 @@
+%h1 API Versions
+%p Page Hits: #{@page_hits}
+%h2 Available API Versions:
+- if @api_versions['success']
+  %ul
+    - @api_versions['versions'].each do |version|
+      %li= version
+- else
+  %p Error: #{@api_versions['errorMsg']}

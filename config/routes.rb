@@ -13,8 +13,8 @@ Rails.application.routes.draw do
   # post 'refresh_token', to: 'authentication#refresh_token', constraints: { format: /(json)/ }
     
     scope module: :v1 do
-      # get 'boxstore/api_versions', to: 'boxstore#api_versions'
-      # get 'boxstore/credentials', to: 'boxstore#credentials'
+      get 'boxstore/api_versions', to: 'boxstore#api_versions'
+      get 'boxstore/credentials', to: 'boxstore#credentials'
    
       get 'welcome/index'
 
