@@ -44,7 +44,7 @@ module Message
   end
 
   def self.logged_in
-    'You are logged in'
+    'You are successfully logged in'
   end
 
   def self.logged_out

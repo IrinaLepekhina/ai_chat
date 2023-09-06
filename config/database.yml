@@ -20,7 +20,7 @@ development:
 
 test:
   <<: *default
-  database: myapp_test
+  database: chat_test
 
 production:
   <<: *default

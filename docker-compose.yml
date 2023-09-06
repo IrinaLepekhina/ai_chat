@@ -1,8 +1,7 @@
-# docker-compose.yml
+# /home/irina/a_rubytut/docker_ror/planta_chat/docker-compose.yml
 version: '3.8' 
 
 services:
-
   web:
     build: .
     ports:
@@ -12,25 +11,31 @@ services:
       - .:/usr/src/app
     env_file:
       - .env
+    networks:
+      - shared_network
 
-  redis:
+  redis_web:
     image: redis/redis-stack:latest 
     ports:
       - "6379:6379"
+    networks:
+      - shared_network
   
-  redisinsight:
+  redisinsight_web:
     image: redislabs/redisinsight:latest
     ports:
       - '8001:8001'
     volumes:
-      - redisinsight_data:/db
+      - redisinsight_data_web:/db
 
-  database:
+  database_web:
     image: postgres
     env_file:
       - .env
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db_data_web:/var/lib/postgresql/data
+    networks:
+      - shared_network
 
   selenium_chrome:
     image: selenium/standalone-chrome-debug
@@ -38,7 +43,13 @@ services:
       driver: none
     ports:
     - "5900:5900"
+    networks:
+    - shared_network
 
 volumes:
-  db_data:
-  redisinsight_data:
+  db_data_web:
+  redisinsight_data_web:
+
+networks:
+  shared_network:
+    external: true

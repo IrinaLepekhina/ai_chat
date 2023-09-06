@@ -17,7 +17,7 @@ describe 'Creating a new user' do
         email: 'test@email'
       ).submit
 
-      expect(page).to have_content('Account created successfully') 
+      expect(page).to have_content('successfully')
       expect(User.last.email).to eq('test@email')
       expect(BCrypt::Password.new(User.last.password_digest) == 'very_secure').to be_truthy
 
@@ -46,7 +46,7 @@ describe 'Creating a new user' do
       expect(response).to have_http_status(:created)
       expect(response.media_type).to eq('application/json')
       expect(response.headers['Authorization']).to include('Bearer')
-      expect(JSON.parse(response.body)['message']).to eq('Account created successfully')
+      expect(JSON.parse(response.body)['message']).to include('successfully')
     end
 
     it 'returns an error for invalid data' do

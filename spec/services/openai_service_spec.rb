@@ -2,7 +2,6 @@
 require 'rails_helper'
 
 describe OpenAiService, type: :service do
-  let(:api_key) { ENV['OPENAI_API_KEY'] }
   let(:openai_service) { described_class.new }
 
   context 'in isolation' do

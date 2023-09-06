@@ -1,6 +1,8 @@
 # app/services/vector_simularity_service.rb
 
 class VectorSimularityService
+  include Loggable
+
   TOPK    = 5     # Number of results to be returned from the VSS query
   DIALECT = 2
   
@@ -9,6 +11,7 @@ class VectorSimularityService
   end
 
   def query_original_text(question_embedding)
+    log_info("Querying original text with given embedding.")
     # Calculate the similarity between the question embedding and each text embedding
     similarity_array = query(question_embedding)
     
@@ -19,7 +22,9 @@ class VectorSimularityService
   private
 
   def query(question_embedding)
+    log_info("Executing query for similarity.")
     if question_embedding.empty?
+      log_error("Question embedding is empty.")
       # Return an empty result if the question embedding is empty
       return []
     end

@@ -2,13 +2,16 @@
 
 # The AuthorizeApiRequest class is responsible for authorizing an API request.
 class AuthorizeApiRequest
+  include Loggable
+
   def initialize(headers = {}, cookies = nil)
     @headers = headers
     @cookies = cookies
+    log_info("Initializing AuthorizeApiRequest")
   end
 
-  # Service entry point - return valid user object
   def call
+    log_info("Authorizing API request")
     {
       user: user
     }
@@ -55,7 +58,7 @@ class AuthorizeApiRequest
   end
 
   def missing_token_error
-    # Raise error if token is missing in both header and cookies
+    log_error("Authentication token missing in both header and cookies.")
     raise(ExceptionHandler::AuthenticationError, Message.unauthorized)
   end
 end

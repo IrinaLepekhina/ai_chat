@@ -6,7 +6,8 @@ TEXT_DIR    = Rails.env.test? ? 'spec/fixtures/public/texts/json' : 'public/text
 VECTOR_FILE = Rails.env.test? ? 'spec/fixtures/test_vectors.json' : 'db/vectors.json'   # JSON file containing text ids and their embeddings
 
 class RedisStorageService < StorageService
-  extend Enumerize
+  include Loggable
+  extend  Enumerize
 
   enumerize :object_type, in: [:HASH, :JSON], predicates: true
   enumerize :index_type,  in: [:FLAT, :HNSW], predicates: true
@@ -14,8 +15,9 @@ class RedisStorageService < StorageService
   enumerize :search_type, in: [:VECTOR, :HYBRID], predicates: true 
 
   def initialize(language_service = nil)
+    log_info("Initializing RedisStorageService")
     @language_service = EmbeddingsAdapter.new(language_service)
-    @redis = Redis.new(host: "redis", port: 6379)
+    @redis = Redis.new(host: "#{ENV['REDIS_HOST']}", port: "#{ENV['REDIS_PORT']}".to_i)
     @object_type = :JSON
     @index_type  = :FLAT
     @metric_type = :COSINE
@@ -23,6 +25,7 @@ class RedisStorageService < StorageService
 
     vectorize_texts
     load_db
+    log_info("RedisStorageService initialized successfully")
   end
 
   def client
@@ -30,6 +33,7 @@ class RedisStorageService < StorageService
   end
 
   def set_query(query_vector)
+    log_info("Storing query vector in Redis")
     set_json_value('query_vector', '$', query_vector)
   end
 
@@ -42,6 +46,8 @@ class RedisStorageService < StorageService
   end
 
   def retrieve_embeddings(text_id = nil)
+    log_info("Retrieving embeddings from Redis for text_id: #{text_id}")
+    
     if text_id
       # Retrieve a specific embedding by text_id
       embedding_json = client.call('JSON.GET', "doc:#{text_id}")
@@ -56,6 +62,8 @@ class RedisStorageService < StorageService
   end
   
   def find_text_by_text_id(text_id)
+    log_info("Finding text by text_id: #{text_id}")
+
     key = "doc:#{text_id}"
     text = client.call('JSON.GET', key)
     JSON.parse(text)['content']
@@ -71,6 +79,7 @@ class RedisStorageService < StorageService
 
   # Generates embeddings of texts and writes them to file
   def vectorize_texts
+    log_info("Starting text embedding generation")
 
     return if vector_file_exists? || (!vector_file_exists? && directory_empty?)
   
@@ -79,6 +88,7 @@ class RedisStorageService < StorageService
     # OpenAi entrance
     json_array = generate_emb_array(texts)
     write_to_json_file(json_array)
+    log_info("Embeddings generated successfully")
   end
 
   def vector_file_exists?
@@ -129,10 +139,13 @@ class RedisStorageService < StorageService
   # Creates an index containing a text_vector field for the embedding
   # and a user-specified field for the text_id.
   def load_db
+    log_info("Loading text embeddings into Redis database")
+
     delete_text_keys
     text_dict = get_texts(VECTOR_FILE)
     store_embeddings(text_dict)
     create_index
+    log_info("Redis database load successful")
   end
 
   def delete_text_keys
@@ -176,10 +189,10 @@ class RedisStorageService < StorageService
   end
 
   def handle_index_creation_error(error)
+    log_error("Error creating index: #{error.message}")
     if error.message == 'Index already exists'
-      puts 'Index exists already, skipped creation.'
+      log_info("Index exists already, skipped creation.")
     else
-      puts "Error creating index: #{error.message}"
       exit(1)
     end
   end

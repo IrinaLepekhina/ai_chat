@@ -43,6 +43,30 @@ describe Api::V1::ConversationsController, type: :request do
           post '/api/conversations', headers: headers_json, as: :json
         }.not_to change(ChatEntry, :count)
       end
+
+      context "when current_user is nil" do
+        before do
+          allow_any_instance_of(ApiController).to receive(:current_user).and_return(nil)
+        end
+    
+        describe 'POST create' do
+          before do
+            post '/api/conversations', headers: headers_json, as: :json
+          end
+    
+          it 'returns an unprocessable entity response' do
+            # debugger
+            expect(response).to have_http_status(:unprocessable_entity)
+            expect(response.content_type).to include("application/json")
+          end
+    
+          it 'does not create a new conversation in the database' do
+            expect {
+              post '/api/conversations', headers: headers_json, as: :json
+            }.not_to change(Conversation, :count)
+          end
+        end
+      end
     end
 
     describe 'GET index' do
@@ -68,7 +92,7 @@ describe Api::V1::ConversationsController, type: :request do
 
       it "sends notice" do
         delete "/api/conversations/#{conversation.id}", headers: headers_json, as: :json
-        expect(response.body).to include('Conversation has been destroyed') 
+        expect(response.body).to include('Conversation deleted') 
       end
 
       it "deletes conversation from database" do
@@ -77,7 +101,7 @@ describe Api::V1::ConversationsController, type: :request do
       end
     end
   end
-
+ 
   context 'when requesting HTML format' do
     describe 'POST create' do
       let(:ai_integration_component) { instance_double('AiIntegrationComponent') }

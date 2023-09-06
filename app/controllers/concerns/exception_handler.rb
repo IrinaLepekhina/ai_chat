@@ -23,10 +23,12 @@ module ExceptionHandler
     rescue_from ActionController::UnknownFormat, with: :render_not_found #RoutingError 404
 
     rescue_from ExceptionHandler::InvalidToken,            with: :invalid_authenticity_token # 401
+    rescue_from JWT::DecodeError,                          with: :invalid_authenticity_token
     rescue_from ExceptionHandler::AuthenticationError,     with: :unauthorized_request   # 401
     rescue_from ExceptionHandler::LanguageServiceError,    with: :language_service_error # 403
     rescue_from ExceptionHandler::TextDirectoryEmptyError, with: :text_directory_empty   # 500
     rescue_from Faraday::ConnectionFailed,                 with: :connection_failed      # 500
+    rescue_from Faraday::TimeoutError,                     with: :connection_failed      # 500
   end
 
   private
@@ -42,6 +44,8 @@ module ExceptionHandler
 
   # RecordInvalid 422
   def render_unprocessable_entity(exception)
+    log_error("Inside render_unprocessable_entity with error: #{exception.message}")
+
     respond_to do |format|
       format.html do
         # For ChatEntriesController, redirect to conversation show page

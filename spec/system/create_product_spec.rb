@@ -43,7 +43,8 @@ describe 'Creating a new product' do
   context "in JSON format" do
     before do
       @user = create(:user)
-      @auth_token = AuthenticateUser.new(@user.email, @user.password).call
+      tokens = AuthenticateUser.new(@user.email, @user.password).call
+      @auth_token = tokens[:jwt]
     end
 
     context 'when submitting valid data' do

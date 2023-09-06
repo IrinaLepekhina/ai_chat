@@ -16,22 +16,15 @@ module Api
     # POST /api/login
     # Authenticate the user and return an authentication token.
     def login
-      auth_token = AuthenticateUser.new(auth_params[:email], auth_params[:password]).call
-      
-      respond_to do |format|
-        format.html do
-          # Set JWT token as a signed cookie
-          cookies.signed[:jwt] = { value: auth_token, expires: 1.week.from_now, httponly: true}#, same_site: :none, secure: Rails.env.production? }
-          redirect_to root_path, notice: Message.logged_in
-        end
-        format.json do
-          # Set JWT token in the response header for API clients
-          response.headers['Authorization'] = "Bearer #{auth_token}"
-          json_response({ message: Message.logged_in }, :created)
-        end
+      tokens = AuthenticateUser.new(auth_params[:email], auth_params[:password]).call
+
+      if tokens
+        handle_token(tokens)
+      else
+        log_error("Failed to authenticate user", email: auth_params[:email])
       end
-    end
-    
+    end 
+
     # POST /api/logout
     # Logs out the user and revokes the authentication token.
     def logout
