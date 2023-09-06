@@ -44,30 +44,20 @@ Determines the similarity between a question embedding and text embeddings, aidi
 
 
 ##### Create the .env file with the necessary environment variables
+`$ cp .env.sample .env`
 
-`$ echo "POSTGRES_USER='postgres'" > .env`
 
-`$ echo "POSTGRES_PASSWORD='long_and_secure_password'" >> .env`
-
-`$ echo "POSTGRES_DB='planta_doc_development'" >> .env`
-
-`$ echo "DATABASE_HOST='database'" >> .env`
+##### Add your private keys
 
 `$ echo "OPENAI_API_KEY='replace_with_your_key'" >> .env`
 
+`$ echo "BOXSTORE_API_KEY='replace_with_your_key'" >> .env`
 
-##### Start the containers
+##### Create network and start the containers
+
+`$ docker network create shared_network`
 
 `$ docker compose -f docker-stack-git.yml up -d`
-
-##### Create the database and run migrations
-
-`$ docker compose exec web bin/rails db:create`
-
-`$ docker compose exec web bin/rails db:migrate`
-
-`$ docker compose exec web bin/rails db:migrate RAILS_ENV=test`
-
 
 ##### Run the tests
 

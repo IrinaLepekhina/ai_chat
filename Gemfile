@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 gem 'dotenv-rails'
+gem 'faraday'
 
 gem 'rails', '~> 7.0.4'
 gem 'sprockets-rails'
@@ -45,6 +46,7 @@ group :development, :test do
   gem 'debug', platforms: %i[mri mingw x64_mingw]
   gem 'factory_bot_rails'
   gem 'rspec-rails'
+  # gem "rspec-its"
 
   gem 'rails-controller-testing'
   gem 'shoulda-matchers'
@@ -75,7 +77,14 @@ group :test do
   gem 'selenium-webdriver'
   gem 'webdrivers'
   gem 'faker'
-  gem 'database_cleaner'
+end
+
+group :pry do
+  gem "awesome_print"
+  gem "pry"
+  gem "pry-byebug"
+  gem "pry-doc"
+  gem "pry-rails"
 end
 
 group :production do
