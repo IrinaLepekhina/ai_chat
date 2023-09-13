@@ -7,7 +7,7 @@ module Api
       skip_before_action :authorize_request
 
       def index
-        redis = Redis.new(host: "#{ENV['REDIS_HOST']}", port: "#{ENV['REDIS_PORT']}".to_i)
+        redis = Redis.new(host: "#{ENV['REDIS_HOST_WEB']}", port: "#{ENV['REDIS_PORT_WEB']}".to_i)
         redis.incr "page hits"
         @page_hits = redis.get "page hits"
       end

@@ -1,55 +1,84 @@
-# /home/irina/a_rubytut/docker_ror/planta_chat/docker-compose.yml
 version: '3.8' 
 
 services:
+
   web:
+    image: ghcr.io/irinalepekhina/planta_chat:dev
     build: .
+    container_name: web
     ports:
       - "3000:3000"
       - "4000:4000"
     volumes:
       - .:/usr/src/app
     env_file:
-      - .env
+      - ./env/development/database
+      - ./env/development/web
+    depends_on: 
+      web_db:
+        condition: service_started
     networks:
-      - shared_network
+      - back
+      - front
 
-  redis_web:
-    image: redis/redis-stack:latest 
+  web_redis:
+    image: redis/redis-stack:latest
+    container_name: web_redis
     ports:
       - "6379:6379"
     networks:
-      - shared_network
-  
-  redisinsight_web:
+      - back
+
+  web_db:
+    image: postgres
+    container_name: web_db
+    env_file:
+      - ./env/development/database
+    volumes:
+      - db_data_web:/var/lib/postgresql/data
+    networks:
+      - back
+
+  web_db_migrator:
+    image: ghcr.io/irinalepekhina/planta_chat:dev
+    container_name: web_db_migrator
+    command: ["./wait-for", "--timeout=60", "web_db:5432", "--",
+      "bin/rails", "db:prepare"]
+    env_file:
+      - ./env/development/database
+      - ./env/development/web
+    networks:
+      - back
+    deploy:
+      restart_policy:
+        condition: none
+
+  web_redisinsight:
     image: redislabs/redisinsight:latest
+    container_name:  web_redisinsight
     ports:
       - '8001:8001'
     volumes:
       - redisinsight_data_web:/db
-
-  database_web:
-    image: postgres
-    env_file:
-      - .env
-    volumes:
-      - db_data_web:/var/lib/postgresql/data
     networks:
-      - shared_network
+      - back
 
   selenium_chrome:
     image: selenium/standalone-chrome-debug
+    container_name:  selenium_chrome
     logging:
       driver: none
     ports:
-    - "5900:5900"
+      - "5900:5900"
     networks:
-    - shared_network
+      - back
 
 volumes:
   db_data_web:
   redisinsight_data_web:
 
 networks:
-  shared_network:
-    external: true
+  front:
+    driver: bridge
+  back:
+    driver: bridge

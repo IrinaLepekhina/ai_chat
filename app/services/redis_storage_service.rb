@@ -17,7 +17,7 @@ class RedisStorageService < StorageService
   def initialize(language_service = nil)
     log_info("Initializing RedisStorageService")
     @language_service = EmbeddingsAdapter.new(language_service)
-    @redis = Redis.new(host: "#{ENV['REDIS_HOST']}", port: "#{ENV['REDIS_PORT']}".to_i)
+    @redis = Redis.new(host: "#{ENV['REDIS_HOST_WEB']}", port: "#{ENV['REDIS_PORT_WEB']}".to_i)
     @object_type = :JSON
     @index_type  = :FLAT
     @metric_type = :COSINE
