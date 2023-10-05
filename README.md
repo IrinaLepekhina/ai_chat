@@ -35,35 +35,6 @@ Facilitates index management, enhancing vector similarity searches.
 Uses Redis for similarity calculations.  
 Determines the similarity between a question embedding and text embeddings, aiding in identifying the closest matching text.
 
-#### Installation:
-##### Clone the repository
-
-`$ git clone https://github.com/IrinaLepekhina/planta_chat.git`
-
-`$ cd planta_chat`
-
-
-##### Create the .env file with the necessary environment variables
-`$ cp .env.sample .env`
-
-
-##### Add your private keys
-
-`$ echo "OPENAI_API_KEY='replace_with_your_key'" >> .env`
-
-`$ echo "BOXSTORE_API_KEY='replace_with_your_key'" >> .env`
-
-##### Create network and start the containers
-
-`$ docker network create shared_network`
-
-`$ docker compose -f docker-stack-git.yml up -d`
-
-##### Run the tests
-
-`$ docker compose exec web bin/rspec`
-
-
 ##### Configuration
 
 The Dockerfile installs the necessary dependencies, including Ruby, Node.js, Yarn, Redis, PostgreSQL.  

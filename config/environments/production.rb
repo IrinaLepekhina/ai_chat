@@ -45,8 +45,8 @@ Rails.application.configure do
   # config.action_cable.url = "wss://example.com/cable"
   # config.action_cable.allowed_request_origins = [ "http://example.com", /http:\/\/example.*/ ]
 
-  # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = true
+  # Force all access to the app over SSL, but allow an exception for internal communications
+  config.force_ssl = true unless ENV['INTERNAL_COMMUNICATION'] == 'true'
 
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).
@@ -90,4 +90,14 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # The default host for your app (used in mailers, etc.)
+  config.action_controller.default_url_options = {
+    host: ENV.fetch('DEFAULT_HOST', 'web.muul.ru')
+  }
+  
+  # If you're behind a proxy like Traefik, trust the forwarded headers.
+  # ENV['TRUSTED_PROXIES'] can be a comma-separated string like "127.0.0.1,::1"
+  trusted_proxies = ENV.fetch('TRUSTED_PROXIES', '127.0.0.1,::1').split(',')
+  config.action_dispatch.trusted_proxies = trusted_proxies
 end

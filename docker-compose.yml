@@ -53,6 +53,20 @@ services:
       restart_policy:
         condition: none
 
+  web_redis_uploader:
+    image: ghcr.io/irinalepekhina/planta_chat:dev
+    container_name: web_redis_uploader
+    command: ["./wait-for", "--timeout=120", "web_redis:6379", "--",
+      "ruby", "bin/redis_uploader.rb"]
+    env_file:
+      - ./env/development/database
+      - ./env/development/web
+    networks:
+      - back
+    deploy:
+      restart_policy:
+        condition: none
+
   web_redisinsight:
     image: redislabs/redisinsight:latest
     container_name:  web_redisinsight

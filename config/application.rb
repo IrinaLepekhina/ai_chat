@@ -52,5 +52,8 @@ module MenuDoc
     config.session_store :cookie_store, key:  "_chat_session", domain: :all, tld_length: 2
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use config.session_store, config.session_options
+    
+    # Enable the asset pipeline
+    config.assets.enabled = true
   end
 end
