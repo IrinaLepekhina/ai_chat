@@ -14,10 +14,11 @@ class RedisStorageService < StorageService
   enumerize :metric_type, in: [:L2, :IP, :COSINE], predicates: true
   enumerize :search_type, in: [:VECTOR, :HYBRID], predicates: true 
 
-  def initialize(language_service = nil)
+  def initialize(language_service:, redis_client:)
     log_info("Initializing RedisStorageService")
-    @language_service = EmbeddingsAdapter.new(language_service)
-    @redis = Redis.new(host: "#{ENV['REDIS_HOST_WEB']}", port: "#{ENV['REDIS_PORT_WEB']}".to_i)
+
+    @language_service = language_service
+    @redis = redis_client
     @object_type = :JSON
     @index_type  = :FLAT
     @metric_type = :COSINE
@@ -69,19 +70,16 @@ class RedisStorageService < StorageService
     JSON.parse(text)['content']
   end
 
-  private
-
-  def set_json_value(key, path, value)
-    client.call('JSON.SET', key, path, value.to_json)
-  end
-
-# vectorize_texts
-
   # Generates embeddings of texts and writes them to file
   def vectorize_texts
+    # puts "Inside vectorize_texts method"
     log_info("Starting text embedding generation")
 
-    return if vector_file_exists? || (!vector_file_exists? && directory_empty?)
+    if vector_file_exists? || (!vector_file_exists? && directory_empty?)
+      log_info("Vector file exists. Exiting early from vectorize_texts")
+      # puts "Vector file exists. Exiting early from vectorize_texts"
+      return
+    end
   
     texts = get_text_files(NUM_TEXTS)
  
@@ -89,8 +87,34 @@ class RedisStorageService < StorageService
     json_array = generate_emb_array(texts)
     write_to_json_file(json_array)
     log_info("Embeddings generated successfully")
+    # puts "Embeddings generated successfully"
   end
 
+  def load_db
+    if database_loaded?
+      if index_exists?('text_idx')
+        log_info("Redis database and index are already loaded")
+      else
+        log_info("Redis database is loaded, but index is missing. Creating index...")
+        create_index unless index_exists?('text_idx')
+        log_info("Index reloaded")
+      end
+    else
+      log_info("Loading text embeddings into Redis database")
+      text_dict = get_texts(VECTOR_FILE)
+      store_embeddings(text_dict)
+      create_index unless index_exists?('text_idx')
+      log_info("Redis database load successful")
+    end
+  end
+
+  private
+
+  def set_json_value(key, path, value)
+    client.call('JSON.SET', key, path, value.to_json)
+  end
+
+# vectorize_texts
   def vector_file_exists?
     File.exist?(VECTOR_FILE)
   end
@@ -121,11 +145,15 @@ class RedisStorageService < StorageService
   # OpenAi entrance
   def generate_emb_array(texts)
     texts.map do |text|
+      next unless text['text_id'] && text['content'] && !text['content'].empty?
+  
       vector = @language_service.get_embeddings(text['content'])
+      next unless vector && !vector.empty?
+  
       text['text_vector'] = vector
       text
-    end
-  end    
+    end.compact
+  end
 
   def write_to_json_file(json_array)
     File.open(VECTOR_FILE, 'w') do |outfile|
@@ -134,18 +162,9 @@ class RedisStorageService < StorageService
   end
   
 # load_db
-
-  # Loads Redis with JSON documents containing text embeddings.
-  # Creates an index containing a text_vector field for the embedding
-  # and a user-specified field for the text_id.
-  def load_db
-    log_info("Loading text embeddings into Redis database")
-
-    delete_text_keys
-    text_dict = get_texts(VECTOR_FILE)
-    store_embeddings(text_dict)
-    create_index
-    log_info("Redis database load successful")
+  def database_loaded?
+    # This checks if there's any key that starts with 'doc:'
+    !client.keys('doc:*').empty?
   end
 
   def delete_text_keys
@@ -162,18 +181,21 @@ class RedisStorageService < StorageService
     file_content = JSON.parse(File.read(vector_file))
   end
 
+  def index_exists?(index_name)
+    existing_indexes = Array(client.call('FT._LIST'))
+    existing_indexes.include?(index_name)
+  end
+
   def create_index
-    begin
-      client.call('FT.INFO', 'text_idx')
+    if index_exists?('text_idx')
+      log_info("Index already exists!")
       puts 'Index already exists!'
-    rescue Redis::CommandError => e
-      if e.message.include?('Unknown Index name')
-        schema = generate_schema
-        begin
-          client.call('FT.CREATE', 'text_idx', 'ON', @object_type, 'PREFIX', '1', 'doc:', 'SCHEMA', *schema)
-        rescue Redis::CommandError => e
-          handle_index_creation_error(e)
-        end
+    else
+      schema = generate_schema
+      begin 
+        client.call('FT.CREATE', 'text_idx', 'ON', @object_type, 'PREFIX', '1', 'doc:', 'SCHEMA', *schema)
+      rescue Redis::CommandError => e
+        handle_index_creation_error(e)
       end
     end
   end

@@ -5,9 +5,13 @@
 class AiIntegrationComponent
   include Loggable
 
-  def initialize
-    @language_service = EmbeddingsAdapter.new(OpenAiService.new)
-    @redis_storage_service = RedisStorageService.new(@language_service)
+  def initialize(
+    language_service: EmbeddingsAdapter.new(OpenAiService.new),
+    redis_client:     Redis.new(host: "#{ENV['REDIS_HOST_WEB']}", port: "#{ENV['REDIS_PORT_WEB']}".to_i)
+  )
+    @language_service          = language_service
+    @redis_client              = redis_client
+    @redis_storage_service     = RedisStorageService.new(language_service: @language_service, redis_client: @redis_client)
     @vector_similarity_service = VectorSimularityService.new(@redis_storage_service)
   end
 

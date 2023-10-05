@@ -3,23 +3,36 @@ require 'rails_helper'
 describe VectorSimularityService, type: :service do
   let(:question_embedding) { JSON.parse(File.read('spec/fixtures/question_embedding.json')) }
   let(:query_vector)       { JSON.parse(File.read('spec/fixtures/chat_entry.json')) }
- 
-  before(:all) do
-    FileUtils.cp('spec/fixtures/vectors.json', VECTOR_FILE) unless File.exist?(VECTOR_FILE)
+  
+  let(:mock_language_service) { instance_double('EmbeddingsAdapter') }
+  
+  let(:redis_service) do
+    RedisStorageService.new(
+      language_service: mock_language_service,
+      redis_client: mock_redis_client
+    )
+  end
+
+  let(:mock_redis_client) do
+    instance_double('Redis').tap do |client|
+      allow(client).to receive(:keys).with("doc:*").and_return(['doc:sample1', 'doc:sample2']) # Simulate loaded Redis with vectorized texts
+      allow(client).to receive(:pipelined).and_yield(client)
+      allow(client).to receive(:call).with(any_args).and_return(
+        [
+          ["distance",   "0.1", "$", "{\"text_id\":\"text1\",\"content\":\"Text 1 content\"}"],
+          ["distance",   "0.2", "$", "{\"text_id\":\"text2\",\"content\":\"Text 2 content\"}"],
+          ["other_type", "0.3", "$", "{\"text_id\":\"text3\",\"content\":\"Text 3 content\"}"]
+        ]
+      )
+    end
+  end
+
+  before do
+    allow(mock_redis_client).to receive(:pipelined).and_yield(mock_redis_client)
   end
 
   describe 'VectorSimularityService with Redis backend' do
-    let(:redis_service) { RedisStorageService.new }
-    let(:vss)           { VectorSimularityService.new(redis_service) }
-
-    before(:each) do
-      redis_service.set_query(query_vector)
-    end
-  
-    after(:each) do
-      # Clean up test data from the Redis index
-      redis_service.client.call('FT.DROPINDEX', 'text_idx', 'DD')
-    end
+    let(:vss) { VectorSimularityService.new(redis_service) }
 
     describe '#initialize' do
       it 'sets the redis service correctly' do
@@ -59,8 +72,8 @@ describe VectorSimularityService, type: :service do
       context 'with similarity_array containing valid elements' do
         let(:similarity_array) do
           [
-            ["distance", "0.1", "$", "{\"text_id\":\"text1\",\"content\":\"Text 1 content\"}"],
-            ["distance", "0.2", "$", "{\"text_id\":\"text2\",\"content\":\"Text 2 content\"}"],
+            ["distance",   "0.1", "$", "{\"text_id\":\"text1\",\"content\":\"Text 1 content\"}"],
+            ["distance",   "0.2", "$", "{\"text_id\":\"text2\",\"content\":\"Text 2 content\"}"],
             ["other_type", "0.3", "$", "{\"text_id\":\"text3\",\"content\":\"Text 3 content\"}"]
           ]
         end

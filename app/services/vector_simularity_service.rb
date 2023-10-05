@@ -14,7 +14,11 @@ class VectorSimularityService
     log_info("Querying original text with given embedding.")
     # Calculate the similarity between the question embedding and each text embedding
     similarity_array = query(question_embedding)
-    
+    log_info("question_embedding : #{question_embedding[0]}")
+    log_info("@redis_service : #{@redis_service}")
+    log_info("idx : #{@redis_service.client.call('FT.INFO', 'text_idx')}")
+    # log_info(" txts: #{@redis_service.retrieve_embeddings.count}")
+    log_info(" similarity_array: #{similarity_array.size}")
     # Find the closest text
     find_max_similarity(similarity_array)
   end
@@ -36,6 +40,8 @@ class VectorSimularityService
   end
 
   def find_max_similarity(similarity_array)
+    # return { text: nil, text_id: nil } unless similarity_array.is_a?(Array)
+
     closest_distance = similarity_array
       .select { |element| element.is_a?(Array) && element[0] == "distance" }
       .min_by { |element| element[1].to_f }
