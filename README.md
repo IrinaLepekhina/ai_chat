@@ -1,9 +1,8 @@
-#### Ruby on Rails Conversational Order Assistant with Docker
+#### Ruby on Rails Conversational Assistant with Docker
 
 The application offers JSON and HTML support for various functionalities:
 
 - ChatEntriesController: Manages requests related to user's questions, including endpoints for creating chat entries and processing them to obtain company information based on OpenAI-generated responses.
-- ProductsController: Manages requests related to products, including endpoints for creating, listing, and retrieving products.
 - UsersController: Handles user signup requests.
 - AuthenticationController: Manages user authentication.
 
@@ -39,4 +38,4 @@ Determines the similarity between a question embedding and text embeddings, aidi
 
 The Dockerfile installs the necessary dependencies, including Ruby, Node.js, Yarn, Redis, PostgreSQL.  
 The credentials can be set using environment variables.  
-The docker-compose.yml file configures multiple services: the web application, Redis, PostgreSQL and SeleniumChrome for test with Capybara. It also includes volume mappings for persisting data across containers.
+The docker-compose.yml file configures multiple services: the AiChat application, Redis, PostgreSQL and SeleniumChrome for test with Capybara. It also includes volume mappings for persisting data across containers.

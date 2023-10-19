@@ -1,11 +1,13 @@
-version: '3.8' 
+version: '3.8'
 
 services:
 
-  web:
-    image: ghcr.io/irinalepekhina/planta_chat:dev
-    build: .
-    container_name: web
+  ai_chat:
+    image: ghcr.io/irinalepekhina/ai_chat:dev
+    build:
+      context: .
+      # dockerfile: ./Dockerfile.prod
+    container_name: ai_chat
     ports:
       - "3000:3000"
       - "4000:4000"
@@ -13,69 +15,70 @@ services:
       - .:/usr/src/app
     env_file:
       - ./env/development/database
-      - ./env/development/web
+      - ./env/development/ai_chat
     depends_on: 
-      web_db:
+      ai_chat_db:
+        condition: service_started
+      ai_chat_redis:
         condition: service_started
     networks:
-      - back
-      - front
+      - ai_chat_back
+      - chat_bot
 
-  web_redis:
+  ai_chat_redis:
     image: redis/redis-stack:latest
-    container_name: web_redis
-    ports:
-      - "6379:6379"
     networks:
-      - back
+      - ai_chat_back
 
-  web_db:
-    image: postgres
-    container_name: web_db
-    env_file:
-      - ./env/development/database
-    volumes:
-      - db_data_web:/var/lib/postgresql/data
-    networks:
-      - back
-
-  web_db_migrator:
-    image: ghcr.io/irinalepekhina/planta_chat:dev
-    container_name: web_db_migrator
-    command: ["./wait-for", "--timeout=60", "web_db:5432", "--",
-      "bin/rails", "db:prepare"]
-    env_file:
-      - ./env/development/database
-      - ./env/development/web
-    networks:
-      - back
-    deploy:
-      restart_policy:
-        condition: none
-
-  web_redis_uploader:
-    image: ghcr.io/irinalepekhina/planta_chat:dev
-    container_name: web_redis_uploader
-    command: ["./wait-for", "--timeout=120", "web_redis:6379", "--",
+  ai_chat_redis_uploader:
+    image: ghcr.io/irinalepekhina/ai_chat:dev
+    # image: infrastructure-ai_chat
+    container_name: ai_chat_redis_uploader
+    command: ["./wait-for", "--timeout=60", "ai_chat_redis:6379", "--",
       "ruby", "bin/redis_uploader.rb"]
     env_file:
       - ./env/development/database
-      - ./env/development/web
+      - ./env/development/ai_chat
     networks:
-      - back
+      - ai_chat_back
     deploy:
       restart_policy:
         condition: none
 
-  web_redisinsight:
+  ai_chat_db_migrator:
+    image: ghcr.io/irinalepekhina/ai_chat:dev
+    # image: infrastructure-ai_chat 
+    container_name: ai_chat_db_migrator
+    command: ["./wait-for", "--timeout=60", "ai_chat_db:5432", "--",
+      "bin/rails", "db:prepare"]
+    env_file:
+      - ./env/development/database
+      - ./env/development/ai_chat
+    networks:
+      - ai_chat_back
+    deploy:
+      restart_policy:
+        condition: none
+
+  ai_chat_db:
+    image: postgres
+    container_name: ai_chat_db
+    env_file:
+      - ./env/development/database
+    volumes:
+      - db_data_ai_chat:/var/lib/postgresql/data
+    networks:
+      - ai_chat_back
+
+  ai_chat_redisinsight:
     image: redislabs/redisinsight:latest
-    container_name:  web_redisinsight
+    container_name:  ai_chat_redisinsight
     ports:
       - '8001:8001'
     volumes:
-      - redisinsight_data_web:/db
+      - redisinsight_data_ai_chat:/db
     networks:
-      - back
+      - ai_chat_back
 
   selenium_chrome:
     image: selenium/standalone-chrome-debug
@@ -85,14 +88,16 @@ services:
     ports:
       - "5900:5900"
     networks:
-      - back
+      - ai_chat_back
 
 volumes:
-  db_data_web:
-  redisinsight_data_web:
+  db_data_ai_chat:
+  redisinsight_data_ai_chat:
 
 networks:
-  front:
+  ai_chat_back:
     driver: bridge
-  back:
+    name:   ai_chat_back
+  chat_bot:
     driver: bridge
+    name:   chat_bot

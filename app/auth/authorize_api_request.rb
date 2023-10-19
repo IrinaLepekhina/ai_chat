@@ -22,43 +22,45 @@ class AuthorizeApiRequest
   attr_reader :headers, :cookies
 
   def user
-    # Check if user is in the database. Memoize user object
-    @user ||= User.find(decoded_auth_token[:user_id]) if decoded_auth_token
-    # Handle user not found
+    user ||= User.find(decoded_auth_token[:user_id]) if decoded_auth_token
+    log_info("User found")
+    user
   rescue ActiveRecord::RecordNotFound => e
-    # Raise custom error
+    log_info("User not found in the database: #{e.message}")
     raise(
-      ExceptionHandler::InvalidToken,
-      "#{Message.invalid_token} #{e.message}"
-    )
+      ExceptionHandler::InvalidToken, "#{Message.invalid_token} #{e.message}")
   end
-
-  # Decode authentication token
+  
   def decoded_auth_token
     @decoded_auth_token ||= JsonWebToken.decode(http_auth_token)
+  rescue => e
+    log_error("Error decoding authentication token: #{e.message}")
+    raise
   end
-
-  # Check for token in `Authorization` header or cookies
+  
   def http_auth_token
-    # Check if token is present
-    cookie_token || header_token || missing_token_error
+    token = cookie_token || header_token || missing_token_error
+    log_info("Using HTTP auth token") if token
+    token
   end
-
+  
   def cookie_token
-    # Retrieve token from cookies if available
-    cookies.signed[:jwt] if cookies.present?
+    token = cookies.signed[:jwt] if cookies.present?
+    log_info("Retrieved token from cookies") if token
+    token
   end
   
   def header_token
-    # Extract token from `Authorization` header if present
     authorization_header = headers['Authorization']
     if authorization_header && authorization_header.start_with?('Bearer ')
-      authorization_header.split(' ').last
+      token = authorization_header.split(' ').last
+      log_info("Retrieved token from Authorization header") if token
+      token
     end
   end
 
   def missing_token_error
-    log_error("Authentication token missing in both header and cookies.")
+    log_info("Authentication token missing in both header and cookies.")
     raise(ExceptionHandler::AuthenticationError, Message.unauthorized)
   end
 end

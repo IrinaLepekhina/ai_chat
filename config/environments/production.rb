@@ -45,12 +45,15 @@ Rails.application.configure do
   # config.action_cable.url = "wss://example.com/cable"
   # config.action_cable.allowed_request_origins = [ "http://example.com", /http:\/\/example.*/ ]
 
-  # Force all access to the app over SSL, but allow an exception for internal communications
-  config.force_ssl = true unless ENV['INTERNAL_COMMUNICATION'] == 'true'
+  # Do not enforce SSL for all access to the app, allowing for internal communications or specific use cases.
+  # Also, disabling automatic redirection to SSL endpoints.
+  config.force_ssl = false
+  config.ssl_options = { redirect: false }
 
-  # Include generic and useful information about system operation, but avoid logging too much
-  # information to avoid inadvertent exposure of personally identifiable information (PII).
-  config.log_level = :info
+  # Setting log level to :debug for detailed system operation insights. 
+  # Developers must ensure
+  # that no personally identifiable information (PII) or sensitive data is logged at this level.
+  config.log_level = :debug
 
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]
@@ -60,7 +63,7 @@ Rails.application.configure do
 
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter     = :resque
-  # config.active_job.queue_name_prefix = "planta_doc_production"
+  # config.active_job.queue_name_prefix = "muul_ai_chat_production"
 
   config.action_mailer.perform_caching = false
 
@@ -76,7 +79,7 @@ Rails.application.configure do
   config.active_support.report_deprecations = false
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = Logger::Formatter.new
+  config.log_formatter = ::Logger::Formatter.new
 
   # Use a different logger for distributed setups.
   # require "syslog/logger"
@@ -97,7 +100,10 @@ Rails.application.configure do
   }
   
   # If you're behind a proxy like Traefik, trust the forwarded headers.
-  # ENV['TRUSTED_PROXIES'] can be a comma-separated string like "127.0.0.1,::1"
-  trusted_proxies = ENV.fetch('TRUSTED_PROXIES', '127.0.0.1,::1').split(',')
+  default_proxies = ['127.0.0.1', '::1', '10.0.0.0/8', '172.16.0.0/12']
+  trusted_proxies = ENV.fetch('TRUSTED_PROXIES', '').split(',')
+  
+  # If TRUSTED_PROXIES is not set or empty, use default values
+  trusted_proxies = default_proxies if trusted_proxies.empty?
   config.action_dispatch.trusted_proxies = trusted_proxies
 end
