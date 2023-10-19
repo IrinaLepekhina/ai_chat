@@ -22,39 +22,39 @@ RSpec.describe 'Authentication', type: :request do
       end 
     end
 
-    context 'when the request format is HTML' do
-      let(:user_attributes) { attributes_for(:user) }
+    # context 'when the request format is HTML' do
+    #   let(:user_attributes) { attributes_for(:user) }
 
-      it 'creates a new user and sets the JWT token cookie' do
-        post api_signup_path, params: { user: user_attributes  }, as: :html
+    #   it 'creates a new user and sets the JWT token cookie' do
+    #     post api_signup_path, params: { user: user_attributes  }, as: :html
 
-        expect(response).to redirect_to(root_path)
-        expect(response).to have_http_status('302')  
-        expect(response.media_type).to eq('text/html')
+    #     expect(response).to redirect_to(root_path)
+    #     expect(response).to have_http_status('302')  
+    #     expect(response.media_type).to eq('text/html')
  
-        expect(response.headers['Set-Cookie']).to include('jwt=') # Check if 'jwt=' is present
-        expect(response.headers['Set-Cookie']).not_to include('jwt=;') # Check if 'jwt=' is not followed by an empty value
-        expect(flash[:notice]).to include('successfully')
-      end 
+    #     expect(response.headers['Set-Cookie']).to include('jwt=') # Check if 'jwt=' is present
+    #     expect(response.headers['Set-Cookie']).not_to include('jwt=;') # Check if 'jwt=' is not followed by an empty value
+    #     expect(flash[:notice]).to include('successfully')
+    #   end 
 
-      # it 'creates a new user and change buttons' #do'
-      #   post api_signup_path, params: { user: user_attributes  }, as: :html
+    #   # it 'creates a new user and change buttons' #do'
+    #   #   post api_signup_path, params: { user: user_attributes  }, as: :html
 
-      #   expect(response).to redirect_to(root_path)
+    #   #   expect(response).to redirect_to(root_path)
         
-      #   follow_redirect!    
-      #   expect(response.body).to include(user_attributes[:nickname])
-      #   expect(response.body).not_to include('Register')
-      #   expect(response.body).not_to include('Login')
-      # end 
+    #   #   follow_redirect!    
+    #   #   expect(response.body).to include(user_attributes[:nickname])
+    #   #   expect(response.body).not_to include('Register')
+    #   #   expect(response.body).not_to include('Login')
+    #   # end 
    
-      # it 'does not create a new user and renders the signup form with errors' do
-      #   post api_signup_path, params: { user: attributes_for(:user, email: nil) }, as: :html
+    #   # it 'does not create a new user and renders the signup form with errors' do
+    #   #   post api_signup_path, params: { user: attributes_for(:user, email: nil) }, as: :html
 
-      #   expect(response).to render_template(:new)
-      #   expect(response.body).to include("be blank")
-      # end
-    end
+    #   #   expect(response).to render_template(:new)
+    #   #   expect(response.body).to include("be blank")
+    #   # end
+    # end
   end
  
   describe 'POST /login' do

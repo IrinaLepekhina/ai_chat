@@ -7,17 +7,17 @@
 
 #   it "is enhanced with JavaScript on", js: true do
 #     visit('/')
-#     expect(page).to have_text("ENHANCED!")
+#     expect(page).to have_text("Let's!")
 #   end
 
 #   it 'welcome message' do
 #     visit('/')
-#     expect(page).to have_content('Planta')
+#     expect(page).to have_content('Muul')
 #   end
 
 #   it "shows the number of page views" do
 #     visit('/')
-#     expect(page.text).to match('This page has been viewed')
+#     expect(page.text).to match('talk')
 #   end
 # end
  

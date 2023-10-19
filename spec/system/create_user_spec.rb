@@ -9,31 +9,31 @@ describe 'Creating a new user' do
   # to use the post method provided by Rails' ActionDispatch::IntegrationTest class
   include ActionDispatch::IntegrationTest::Behavior
 
-  context "in HTML format" do
-    let(:new_user_form) { NewUserForm.new }
+  # context "in HTML format" do
+  #   let(:new_user_form) { NewUserForm.new }
 
-    it 'create new user with valid date' do
-      new_user_form.visit_page.fill_in_with(
-        email: 'test@email'
-      ).submit
+  #   it 'create new user with valid date' do
+  #     new_user_form.visit_page.fill_in_with(
+  #       email: 'test@email'
+  #     ).submit
 
-      expect(page).to have_content('successfully')
-      expect(User.last.email).to eq('test@email')
-      expect(BCrypt::Password.new(User.last.password_digest) == 'very_secure').to be_truthy
+  #     expect(page).to have_content('successfully')
+  #     expect(User.last.email).to eq('test@email')
+  #     expect(BCrypt::Password.new(User.last.password_digest) == 'very_secure').to be_truthy
 
 
-      # expect(page).to have_content('@test_name')
-      # expect(page).to have_button('Logout')
-      # expect(page).not_to have_link('New User')
-      # expect(page).not_to have_link('Login')
+  #     # expect(page).to have_content('@test_name')
+  #     # expect(page).to have_button('Logout')
+  #     # expect(page).not_to have_link('New User')
+  #     # expect(page).not_to have_link('Login')
 
-    end
+  #   end
 
-    it 'cannot create new user with invalid date' do
-      new_user_form.visit_page.submit
-      expect(page).to have_content("can't be blank")
-    end
-  end
+  #   it 'cannot create new user with invalid date' do
+  #     new_user_form.visit_page.submit
+  #     expect(page).to have_content("can't be blank")
+  #   end
+  # end
 
   context 'in JSON format' do
 

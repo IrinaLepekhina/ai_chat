@@ -2,7 +2,7 @@
 %html
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %title PlantaApp
+    %title Muul AiChat
     %meta{:content => "width=device-width,initial-scale=1", :name => "viewport"}/
     = csrf_meta_tags
     = csp_meta_tag
@@ -13,13 +13,13 @@
     .container-fluid.bg-lightd.px-0.bg-light
       .container-sm
         %nav.navbar.navbar-expand-sm.navbar-light.bg-light
-          %a.navbar-brand Planta
+          %a.navbar-brand MuulAI
           %button.navbar-toggler.d-lg-none{"aria-controls" => "collapsibleNavId", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-bs-target" => "#collapsibleNavId", "data-bs-toggle" => "collapse", :type => "button"}
             %span.navbar-toggler-icon
           #collapsibleNavId.collapse.navbar-collapse
             %ul.navbar-nav.me-auto.mt-2.mt-lg-0.center
-              %li.nav-item= link_to 'Products', api_products_path, class: "nav-link"
-              %li.nav-item= link_to 'Create new product' , new_api_product_path, class: "nav-link"
+              -# %li.nav-item= link_to 'Products', api_products_path, class: "nav-link"
+              -# %li.nav-item= link_to 'Create new product' , new_api_product_path, class: "nav-link"
               %li.nav-item= link_to 'All chats', api_conversations_path, class: "nav-link"
               %li.nav-item= button_to 'Asc Me', api_conversations_path, method: :post, class: 'nav-link btn btn-link'
             - if current_user.present?
@@ -27,7 +27,7 @@
                 = "#{current_user.nickname}"
               %span.nav-item= button_to 'Logout', api_logout_path, method: :delete, class: "nav-link btn btn-link"
             - else
-              %span.nav-item.px-3= link_to 'Register', api_signup_path, class: "nav-link"
+              -# %span.nav-item.px-3= link_to 'Register', api_signup_path, class: "nav-link"
               %span.nav-item.px-3= link_to 'Login', api_login_path, class: "nav-link"
       
       .container-sm.mt-4
