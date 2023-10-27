@@ -59,7 +59,7 @@ services:
     image: postgres
     container_name: ai_chat_db
     env_file:
-      - ./env/development/database
+      - /opt/env/development/database
     volumes:
       - db_data_ai_chat:/var/lib/postgresql/data
     networks:
