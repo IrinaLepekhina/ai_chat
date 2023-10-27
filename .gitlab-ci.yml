@@ -1,0 +1,28 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  IMAGE: "$CI_REGISTRY_IMAGE:$CI_BUILD_REF"
+  IMAGE_LATEST: "$CI_REGISTRY_IMAGE:dev"
+
+
+build-dev:
+  stage: build
+  before_script:
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
+  script:
+    - docker build -t $IMAGE -t $IMAGE_LATEST -f Dockerfile  .
+    - docker push $IMAGE_LATEST
+    - docker push $IMAGE
+  tags:
+    - swarm
+
+.deploy:
+  stage: deploy
+  script: docker stack deploy --prune -c docker-compose.yml -c docker-compose.${STAGE}.yml muul
+  tags:
+    - swarm
+
+deploy-dev:
+  extends: .deploy

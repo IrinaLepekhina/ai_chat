@@ -3,10 +3,7 @@ version: '3.8'
 services:
 
   ai_chat:
-    image: ghcr.io/irinalepekhina/ai_chat:dev
-    build:
-      context: .
-      # dockerfile: ./Dockerfile.prod
+    image: $CI_REGISTRY_IMAGE:dev
     container_name: ai_chat
     ports:
       - "3000:3000"
@@ -26,12 +23,12 @@ services:
       - chat_bot
 
   ai_chat_redis:
-    image: redis/redis-stack:latest
+    image: redis/redis-stack:7.2.0-v4
     networks:
       - ai_chat_back
 
   ai_chat_redis_uploader:
-    image: ghcr.io/irinalepekhina/ai_chat:dev
+    image: $CI_REGISTRY_IMAGE:dev
     # image: infrastructure-ai_chat
     container_name: ai_chat_redis_uploader
     command: ["./wait-for", "--timeout=60", "ai_chat_redis:6379", "--",
@@ -46,7 +43,7 @@ services:
         condition: none
 
   ai_chat_db_migrator:
-    image: ghcr.io/irinalepekhina/ai_chat:dev
+    image: $CI_REGISTRY_IMAGE:dev
     # image: infrastructure-ai_chat 
     container_name: ai_chat_db_migrator
     command: ["./wait-for", "--timeout=60", "ai_chat_db:5432", "--",
@@ -71,7 +68,7 @@ services:
       - ai_chat_back
 
   ai_chat_redisinsight:
-    image: redislabs/redisinsight:latest
+    image: redislabs/redisinsight:1.14.0
     container_name:  ai_chat_redisinsight
     ports:
       - '8001:8001'
@@ -81,7 +78,7 @@ services:
       - ai_chat_back
 
   selenium_chrome:
-    image: selenium/standalone-chrome-debug
+    image: selenium/standalone-chrome-debug:3.141.59
     container_name:  selenium_chrome
     logging:
       driver: none
