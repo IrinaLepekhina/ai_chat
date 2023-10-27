@@ -14,10 +14,8 @@ services:
       - /opt/env/development/database
       - /opt/env/development/ai_chat
     depends_on: 
-      ai_chat_db:
-        condition: service_started
-      ai_chat_redis:
-        condition: service_started
+      - ai_chat_db
+      - ai_chat_redis
     networks:
       - ai_chat_back
       - chat_bot
