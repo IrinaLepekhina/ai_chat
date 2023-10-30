@@ -17,13 +17,19 @@ services:
       - ai_chat_db
       - ai_chat_redis
     networks:
-      - ai_chat_back
-      - chat_bot
+      ai_chat_back:
+        aliases:
+          - ai_chat
+      chat_bot:
+        aliases:
+          - ai_chat
 
   ai_chat_redis:
     image: redis/redis-stack:7.2.0-v4
     networks:
-      - ai_chat_back
+      ai_chat_back:
+        aliases:
+          - ai_chat_redis
 
   ai_chat_redis_uploader:
     image: $CI_REGISTRY_IMAGE:dev
@@ -35,7 +41,9 @@ services:
       - /opt/env/development/database
       - /opt/env/development/ai_chat
     networks:
-      - ai_chat_back
+      ai_chat_back:
+        aliases:
+          - ai_chat_redis_uploader
     deploy:
       restart_policy:
         condition: none
@@ -50,20 +58,24 @@ services:
       - /opt/env/development/database
       - /opt/env/development/ai_chat
     networks:
-      - ai_chat_back
+      ai_chat_back:
+        aliases:
+          - ai_chat_db_migrator
     deploy:
       restart_policy:
         condition: none
 
   ai_chat_db:
-    image: postgres
+    image: postgres:16
     container_name: ai_chat_db
     env_file:
       - /opt/env/development/database
     volumes:
       - db_data_ai_chat:/var/lib/postgresql/data
     networks:
-      - ai_chat_back
+      ai_chat_back:
+        aliases:
+          - ai_chat_db
 
   ai_chat_redisinsight:
     image: redislabs/redisinsight:1.14.0
@@ -73,7 +85,9 @@ services:
     volumes:
       - redisinsight_data_ai_chat:/db
     networks:
-      - ai_chat_back
+      ai_chat_back:
+        aliases:
+          - ai_chat_redisinsight
 
   selenium_chrome:
     image: selenium/standalone-chrome-debug:3.141.59
@@ -83,7 +97,9 @@ services:
     ports:
       - "5900:5900"
     networks:
-      - ai_chat_back
+      ai_chat_back:
+        aliases:
+          - selenium_chrome
 
 volumes:
   db_data_ai_chat:
