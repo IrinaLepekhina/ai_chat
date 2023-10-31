@@ -6,8 +6,8 @@ services:
     image: $CI_REGISTRY_IMAGE:dev
     container_name: ai_chat
     ports:
-      - "3000:3000"
-      - "4000:4000"
+      - "3000"
+      - "4000"
     volumes:
       - .:/usr/src/app
     env_file:
@@ -32,9 +32,6 @@ services:
         condition: on-failure
         delay: 10s
         max_attempts: 3
-      resources:
-        limits:
-          memory: 128M
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.muul_ai_chat.rule=Host(`chat.muul.ru`)"
