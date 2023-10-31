@@ -6,8 +6,8 @@ services:
     image: $CI_REGISTRY_IMAGE:dev
     container_name: ai_chat
     ports:
-      - "3000"
-      - "4000"
+      - "3000:3000"
+      - "4000:4000"
     volumes:
       - .:/usr/src/app
     env_file:
