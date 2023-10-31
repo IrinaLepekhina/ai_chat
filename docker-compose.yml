@@ -132,3 +132,5 @@ networks:
   chat_bot:
     driver: overlay
     name:   chat_bot
+  proxy_main:
+    external: true
