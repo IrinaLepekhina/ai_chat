@@ -6,8 +6,8 @@ services:
     image: $CI_REGISTRY_IMAGE:dev
     container_name: ai_chat
     ports:
-      - "3000:3000"
-      - "4000:4000"
+      - "3000"
+      - "4000"
     volumes:
       - .:/usr/src/app
     env_file:
@@ -16,6 +16,7 @@ services:
     depends_on: 
       - ai_chat_db
       - ai_chat_redis
+      
     networks:
       ai_chat_back:
         aliases:
@@ -23,7 +24,26 @@ services:
       chat_bot:
         aliases:
           - ai_chat
-
+      proxy_main:
+        aliases:
+          - ai_chat
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+      resources:
+        limits:
+          memory: 128M
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.muul_ai_chat.rule=Host(`chat.muul.ru`)"
+        - "traefik.http.routers.muul_ai_chat.service=muul_ai_chat"
+        - "traefik.http.routers.muul_ai_chat.tls.certresolver=le"
+        - "traefik.http.routers.muul_ai_chat.entrypoints=websecure,web"
+        - "traefik.http.services.muul_ai_chat.loadbalancer.server.port=3000"
+        - "traefik.http.services.muul_ai_chat.loadbalancer.passhostheader=true"
+  
   ai_chat_redis:
     image: redis/redis-stack:7.2.0-v4
     networks:

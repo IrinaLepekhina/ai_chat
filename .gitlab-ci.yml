@@ -20,7 +20,7 @@ build-dev:
 
 .deploy:
   stage: deploy
-  script: docker stack deploy --prune -c docker-compose.yml muul
+  script: docker stack deploy -c docker-compose.yml muul
   tags:
     - swarm
 
