@@ -11,8 +11,8 @@ services:
     volumes:
       - .:/usr/src/app
     env_file:
-      - /opt/env/development/database
-      - /opt/env/development/ai_chat
+      - ./database
+      - ./ai_chat
     depends_on: 
       - ai_chat_db
       - ai_chat_redis
@@ -55,8 +55,8 @@ services:
     command: ["./wait-for", "--timeout=60", "ai_chat_redis:6379", "--",
       "ruby", "bin/redis_uploader.rb"]
     env_file:
-      - /opt/env/development/database
-      - /opt/env/development/ai_chat
+      - ./database
+      - ./ai_chat
     networks:
       ai_chat_back:
         aliases:
@@ -72,8 +72,8 @@ services:
     command: ["./wait-for", "--timeout=60", "ai_chat_db:5432", "--",
       "bin/rails", "db:prepare"]
     env_file:
-      - /opt/env/development/database
-      - /opt/env/development/ai_chat
+      - ./database
+      - ./ai_chat
     networks:
       ai_chat_back:
         aliases:
@@ -86,7 +86,7 @@ services:
     image: postgres:16
     container_name: ai_chat_db
     env_file:
-      - /opt/env/development/database
+      - ./database
     volumes:
       - db_data_ai_chat:/var/lib/postgresql/data
     networks:

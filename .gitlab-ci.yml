@@ -20,9 +20,13 @@ build-dev:
 
 .deploy:
   stage: deploy
-  script: docker stack deploy -c docker-compose.yml muul
+  script: 
+    - echo "$AI_CHAT" > ai_chat
+    - echo "$CHAT_DATABASE" > database
+    - docker stack deploy -c docker-compose.yml muul
   tags:
     - swarm
 
 deploy-dev:
+  environment: dev
   extends: .deploy
