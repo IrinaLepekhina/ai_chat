@@ -8,8 +8,8 @@ services:
     ports:
       - "3000"
       - "4000"
-    volumes:
-      - .:/usr/src/app
+    # volumes:
+    #   - .:/usr/src/app
     env_file:
       - ./database
       - ./ai_chat
