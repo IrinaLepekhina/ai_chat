@@ -12,7 +12,7 @@ build-dev:
   before_script:
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" $CI_REGISTRY
   script:
-    - docker build -t $IMAGE -t $IMAGE_LATEST -f Dockerfile  .
+    - docker build -t $IMAGE -t $IMAGE_LATEST -f Dockerfile.prod  .
     - docker push $IMAGE_LATEST
     - docker push $IMAGE
   tags:
