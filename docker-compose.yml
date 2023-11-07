@@ -38,7 +38,7 @@ services:
         - "traefik.http.routers.muul_ai_chat.service=muul_ai_chat"
         - "traefik.http.routers.muul_ai_chat.tls.certresolver=le"
         - "traefik.http.routers.muul_ai_chat.entrypoints=websecure,web"
-        - "traefik.http.services.muul_ai_chat.loadbalancer.server.port=3001"
+        - "traefik.http.services.muul_ai_chat.loadbalancer.server.port=3000"
         - "traefik.http.services.muul_ai_chat.loadbalancer.passhostheader=true"
   
   ai_chat_redis:
