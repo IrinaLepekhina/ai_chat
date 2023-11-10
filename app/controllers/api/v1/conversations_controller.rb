@@ -29,6 +29,13 @@ module Api
         @chat_entry       = @conversation.chat_entries.build
         @chat_entries     = @conversation.chat_entries.order(created_at: :asc).page(params[:page]).per(4)
 
+        @text_files = {
+          'About Us' => 'about_us.json',
+          'Products' => 'products.json',
+          'Pricing'  => 'pricing.json',
+          'Order'    => 'order.json'
+        }
+
         last_chat_entry = @chat_entries.last
         if last_chat_entry && last_chat_entry.ai_response
           @original_text_id = last_chat_entry.ai_response.original_text_id

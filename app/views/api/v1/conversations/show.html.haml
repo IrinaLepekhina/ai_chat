@@ -4,8 +4,6 @@
     .col-md-6
       %h1 Welcome to the conversation page
 
-      %h4 #{@original_text_id}
-
       = render 'api/v1/chat_entries/new', chat_entry: @chat_entry
 
       .pt-4
@@ -13,9 +11,8 @@
         = render 'api/v1/chat_entries/chat_entry', chat_entry: chat_entry
 
     .col-md-6
-      = render partial: 'shared/text_content', locals: { title: 'About Us',           content: File.read(Rails.public_path.join('texts', 'json', 'about_us.json')) }
-      = render partial: 'shared/text_content', locals: { title: 'FAQs',               content: File.read(Rails.public_path.join('texts', 'json', 'faqs.json')) }
-      = render partial: 'shared/text_content', locals: { title: 'Terms of Condition', content: File.read(Rails.public_path.join('texts', 'json', 'terms_of_condition.json')) }
+    - @text_files.each do |title, file_name|
+      = render partial: 'shared/text_content', locals: { title: title, content: File.read(Rails.public_path.join('texts', 'json', file_name)) }
 
 = paginate @chat_entries, remote: true
 
