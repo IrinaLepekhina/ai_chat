@@ -15,3 +15,7 @@ tmp/*
 config/master.key
 .env*
 /env*
+
+git_operations.sh
+build_push.sh
+img_delete.sh
