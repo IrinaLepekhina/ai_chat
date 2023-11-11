@@ -1,6 +1,6 @@
-# app/services/vector_simularity_service.rb
+# app/services/vector_similarity_service.rb
 
-class VectorSimularityService
+class VectorSimilarityService
   include Loggable
 
   TOPK    = 5     # Number of results to be returned from the VSS query

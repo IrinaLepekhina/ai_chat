@@ -4,6 +4,7 @@
 class AiResponse < ApplicationRecord
   belongs_to :conversation
   belongs_to :chat_entry
+  belongs_to :prompt
 
   validates :conversation, presence: true
   validates :content, presence: true

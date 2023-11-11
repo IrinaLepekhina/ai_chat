@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe VectorSimularityService, type: :service do
+describe VectorSimilarityService, type: :service do
   let(:question_embedding) { JSON.parse(File.read('spec/fixtures/question_embedding.json')) }
   let(:query_vector)       { JSON.parse(File.read('spec/fixtures/chat_entry.json')) }
   
@@ -31,8 +31,8 @@ describe VectorSimularityService, type: :service do
     allow(mock_redis_client).to receive(:pipelined).and_yield(mock_redis_client)
   end
 
-  describe 'VectorSimularityService with Redis backend' do
-    let(:vss) { VectorSimularityService.new(redis_service) }
+  describe 'VectorSimilarityService with Redis backend' do
+    let(:vss) { VectorSimilarityService.new(redis_service) }
 
     describe '#initialize' do
       it 'sets the redis service correctly' do

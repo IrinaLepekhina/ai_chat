@@ -1,0 +1,5 @@
+-# app/views/api/v1/prompts/_form.html.haml
+
+= simple_form_for [:api, prompt] do |f|
+  = f.input :content, label: 'Prompt content',   id: 'content-field', required: true
+  = f.submit 'submit', class: 'btn btn-primary', id: 'submit-button'

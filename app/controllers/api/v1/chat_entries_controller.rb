@@ -3,9 +3,6 @@
 module Api
   module V1
     class ChatEntriesController < ApiController
-      include Loggable
-
-      skip_before_action :verify_authenticity_token, only: [:create]
 
       def create
         log_info("Processing chat entry creation", conversation_id: params[:conversation_id])

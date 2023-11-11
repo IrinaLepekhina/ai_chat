@@ -1,0 +1,15 @@
+-# app/views/api/v1/prompts/index.html.haml
+
+= paginate @prompts, remote: true
+
+%h1 prompts
+%table.table.table-striped.table-light.mt-5
+  %thead
+    %tr
+      %th ID
+      %th Created At
+  %tbody
+  - @prompts.each do |prompt|
+    %tr.mx-5
+      %td= link_to prompt.id,  api_prompt_path(prompt)
+      %td= prompt.created_at

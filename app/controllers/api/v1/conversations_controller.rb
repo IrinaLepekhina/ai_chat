@@ -3,9 +3,6 @@
 module Api
   module V1
     class ConversationsController < ApiController
-      include Loggable
-      
-      skip_before_action :verify_authenticity_token, only: [:create]
 
       def create
         if params[:conversation_id]

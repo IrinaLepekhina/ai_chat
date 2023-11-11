@@ -18,8 +18,8 @@
             %span.navbar-toggler-icon
           #collapsibleNavId.collapse.navbar-collapse
             %ul.navbar-nav.me-auto.mt-2.mt-lg-0.center
-              -# %li.nav-item= link_to 'Products', api_products_path, class: "nav-link"
-              -# %li.nav-item= link_to 'Create new product' , new_api_product_path, class: "nav-link"
+              %li.nav-item= link_to 'Prompts', api_prompts_path, class: "nav-link"
+              %li.nav-item= link_to 'New prompt' , new_api_prompt_path, class: "nav-link"
               %li.nav-item= link_to 'All chats', api_conversations_path, class: "nav-link"
               %li.nav-item= button_to 'Asc Me', api_conversations_path, method: :post, class: 'nav-link btn btn-link'
             - if current_user.present?

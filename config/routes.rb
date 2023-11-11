@@ -18,15 +18,13 @@ Rails.application.routes.draw do
    
       get 'welcome/index'
 
-      # get  'signup', to: 'users#new',                   constraints: { format: :html }
-      post 'signup', to: 'users#create',                constraints: { format: :json}
-
-      # resources :products, only: %i[new],               constraints: { format: 'html' }
-      # resources :products, only: %i[index create show], constraints: { format: /(json|html)/ }
+      post 'signup', to: 'users#create',                  constraints: { format: :json}
 
       resources :conversations, only: %i[create index show destroy] do
-        resources :chat_entries, only: %i[create],      constraints: { format: /(json|html)/ }
+        resources :chat_entries, only: %i[create],         constraints: { format: /(json|html)/ }
       end
+
+      resources :prompts, only: %i[new create index show], constraints: { format: :html}
     end
   end
 end

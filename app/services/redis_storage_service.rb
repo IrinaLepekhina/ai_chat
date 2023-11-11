@@ -1,7 +1,7 @@
 # app/services/redis_storage_service.rb
 
 VECTOR_DIMENSIONS = 1536
-NUM_TEXTS_LIMIT   =  ENV.fetch('NUM_TEXTS_LIMIT') { 10}                                 # Number of texts to be vectorized from the text dir
+NUM_TEXTS_LIMIT   =  ENV.fetch('NUM_TEXTS_LIMIT').to_i {10}                             # Number of texts to be vectorized from the text dir
 TEXT_DIR    = Rails.env.test? ? 'spec/fixtures/public/texts/json' : 'public/texts/json' # directory of text files
 VECTOR_FILE = Rails.env.test? ? 'spec/fixtures/test_vectors.json' : 'db/vectors.json'   # JSON file containing text ids and their embeddings
 

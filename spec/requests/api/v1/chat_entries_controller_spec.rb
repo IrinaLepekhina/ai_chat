@@ -5,6 +5,7 @@ describe Api::V1::ChatEntriesController, type: :request do
     let(:user)                     { create(:user) }
     let(:conversation)             { create(:conversation, user: user) }
     let(:ai_integration_component) { instance_double('AiIntegrationComponent') }
+    let!(:prompt)                  { create(:prompt) }
 
     let(:headers_json) { { "Accept" => "application/json" } }
     let(:headers_html) { { "Accept" => "text/html" } } 

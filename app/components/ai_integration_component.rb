@@ -12,13 +12,13 @@ class AiIntegrationComponent
     @language_service          = language_service
     @redis_client              = redis_client
     @redis_storage_service     = RedisStorageService.new(language_service: @language_service, redis_client: @redis_client)
-    @vector_similarity_service = VectorSimularityService.new(@redis_storage_service)
+    @vector_similarity_service = VectorSimilarityService.new(@redis_storage_service)
   end
 
-  def generate_ai_response(conversation, content)
+  def generate_ai_response(**args)
     log_info("Beginning generation of AI response.") 
-
+  
     conversation_ai_handler = ConversationAiHandler.new(@language_service, @vector_similarity_service, @redis_storage_service)
-    conversation_ai_handler.generate_ai_response(content)
+    conversation_ai_handler.generate_ai_response(**args)
   end
 end
