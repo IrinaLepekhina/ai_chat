@@ -23,8 +23,8 @@ build-dev:
   script: 
     - echo "$AI_CHAT" > ai_chat
     - echo "$CHAT_DATABASE" > database
-    - docker stack deploy -c docker-compose.yml muul
-    - docker image prune -af
+    - docker stack deploy -c docker-compose.yml muul --with-registry-auth
+    # - docker image prune -af
   tags:
     - swarm
 
