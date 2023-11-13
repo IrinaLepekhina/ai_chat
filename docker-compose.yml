@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   ai_chat:
-    image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    image: $IMAGE
     container_name: ai_chat
     ports:
       - "3000"
@@ -49,7 +49,7 @@ services:
           - ai_chat_redis
 
   ai_chat_redis_uploader:
-    image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    image: $IMAGE
     # image: infrastructure-ai_chat
     container_name: ai_chat_redis_uploader
     command: ["./wait-for", "--timeout=60", "ai_chat_redis:6379", "--",
@@ -66,7 +66,7 @@ services:
         condition: none
 
   ai_chat_db_migrator:
-    image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    image: $IMAGE
     # image: infrastructure-ai_chat 
     container_name: ai_chat_db_migrator
     command: ["./wait-for", "--timeout=60", "ai_chat_db:5432", "--",
