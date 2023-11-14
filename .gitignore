@@ -47,6 +47,7 @@
 /.env*
 /env*
 
-git_operations.sh
-build_push.sh
-img_delete.sh
+pip_git.sh
+pip_build.sh
+pip_img_delete.sh
+pip_stat.sh

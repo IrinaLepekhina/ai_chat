@@ -3,6 +3,7 @@
 module Api
   module V1
     class ConversationsController < ApiController
+      skip_before_action :verify_authenticity_token, only: [:create]
 
       def create
         if params[:conversation_id]
