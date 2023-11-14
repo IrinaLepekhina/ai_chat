@@ -3,8 +3,8 @@ stages:
   - deploy
 
 variables:
-  IMAGE: "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA"
-  IMAGE_LATEST: "$CI_REGISTRY_IMAGE:dev"
+  IMAGE: "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}-${CI_COMMIT_BRANCH}"
+  IMAGE_LATEST: "$CI_REGISTRY_IMAGE:swarm"
 
 
 build-dev:
@@ -23,7 +23,8 @@ build-dev:
   script: 
     - echo "$AI_CHAT" > ai_chat
     - echo "$CHAT_DATABASE" > database
-    - docker stack deploy -c docker-compose.yml muul
+    - docker stack deploy -c docker-compose.yml muul --with-registry-auth
+    # - docker image prune -af
   tags:
     - swarm
 
