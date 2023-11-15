@@ -13,7 +13,7 @@ class ConversationAiHandler
   def generate_ai_response(**args)
     log_info("Starting AI processing")
   
-    question_embedding = @language_service.get_embeddings(args[:content])   
+    question_embedding = @language_service.get_embeddings(content: args[:content])   
     store_query_in_redis(question_embedding, args[:content])
     
     original = find_most_similar_text_and_text_id(question_embedding)
@@ -27,7 +27,7 @@ class ConversationAiHandler
   private
   
   def store_query_in_redis(question_embedding, content)
-    log_info("Storing query in Redis for content #{content}")
+    log_info("Storing query in Redis for content")
 
     query_vector = { "text_id": "chat_entry_content", "text_vector": question_embedding, "content": content }
     @redis.set_query(query_vector)
@@ -39,19 +39,10 @@ class ConversationAiHandler
   end
   
   def generate_ai_response_from_prompt(**args)
-    prompt_wrapped = generate_prompt(**args)
-    log_info("Generating AI response based on prompt for prompt: #{prompt_wrapped}")
-    @language_service.generate_response(prompt_wrapped)   
-      # 'заглушка на время тестов'
-  end
-  
-  def generate_prompt(**args)
-     <<~PROMPT
-     #{args[:prompt]}
+    prompt  = args[:prompt]
+    content = args[:content]
 
-      [Content]
-      #{args[:content]}
-
-    PROMPT
+    log_info("Generating AI response")
+    @language_service.generate_response(prompt: prompt, content: content)
   end
 end
