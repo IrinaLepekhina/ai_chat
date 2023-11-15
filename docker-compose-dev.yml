@@ -3,19 +3,20 @@ version: '3.8'
 services:
 
   ai_chat:
-    image: $IMAGE
+    image: ghcr.io/irinalepekhina/ai_chat:latest
     container_name: ai_chat
     ports:
-      - "3000"
-      - "4000"
+      - "3000:3000"
+      - "4000:4000"
+    volumes:
+      - .:/usr/src/app
     env_file:
-      - ./database
-      - ./ai_chat
-      - ./open_ai
+      - ./env/development/database
+      - ./env/development/ai_chat
+      - ./env/development/open_ai
     depends_on: 
       - ai_chat_db
-      - ai_chat_redis
-      
+      - ai_chat_redis 
     networks:
       ai_chat_back:
         aliases:
@@ -23,39 +24,25 @@ services:
       chat_bot:
         aliases:
           - ai_chat
-      proxy_main:
-        aliases:
-          - ai_chat
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-      labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.muul_ai_chat.rule=Host(`chat.muul.ru`)"
-        - "traefik.http.routers.muul_ai_chat.service=muul_ai_chat"
-        - "traefik.http.routers.muul_ai_chat.tls.certresolver=le"
-        - "traefik.http.routers.muul_ai_chat.entrypoints=websecure,web"
-        - "traefik.http.services.muul_ai_chat.loadbalancer.server.port=3000"
-        - "traefik.http.services.muul_ai_chat.loadbalancer.passhostheader=true"
-  
+
   ai_chat_redis:
     image: redis/redis-stack:7.2.0-v4
+    container_name: ai_chat_redis
+    ports:
+      - "6379:6379"
     networks:
       ai_chat_back:
         aliases:
           - ai_chat_redis
 
   ai_chat_redis_uploader:
-    image: $IMAGE
+    image: ghcr.io/irinalepekhina/ai_chat:latest
     container_name: ai_chat_redis_uploader
     command: ["./wait-for", "--timeout=60", "ai_chat_redis:6379", "--",
       "ruby", "bin/redis_uploader.rb"]
     env_file:
-      - ./database
-      - ./ai_chat
-      - ./open_ai
+      - ./env/development/database
+      - ./env/development/ai_chat
     networks:
       ai_chat_back:
         aliases:
@@ -65,26 +52,23 @@ services:
         condition: none
 
   ai_chat_db_migrator:
-    image: $IMAGE
+    image: ghcr.io/irinalepekhina/ai_chat:latest
     container_name: ai_chat_db_migrator
     command: ["./wait-for", "--timeout=60", "ai_chat_db:5432", "--",
       "bin/rails", "db:prepare"]
     env_file:
-      - ./database
-      - ./ai_chat
+      - ./env/development/database
+      - ./env/development/ai_chat
     networks:
       ai_chat_back:
         aliases:
           - ai_chat_db_migrator
-    deploy:
-      restart_policy:
-        condition: none
 
   ai_chat_db:
     image: postgres:16
     container_name: ai_chat_db
     env_file:
-      - ./database
+      - ./env/development/database
     volumes:
       - db_data_ai_chat:/var/lib/postgresql/data
     networks:
@@ -92,15 +76,38 @@ services:
         aliases:
           - ai_chat_db
 
+  ai_chat_redisinsight:
+    image: redislabs/redisinsight:1.14.0
+    container_name:  ai_chat_redisinsight
+    ports:
+      - '8001:8001'
+    volumes:
+      - redisinsight_data_ai_chat:/db
+    networks:
+      ai_chat_back:
+        aliases:
+          - ai_chat_redisinsight
+
+  selenium_chrome:
+    image: selenium/standalone-chrome-debug:3.141.59
+    container_name:  selenium_chrome
+    logging:
+      driver: none
+    ports:
+      - "5900:5900"
+    networks:
+      ai_chat_back:
+        aliases:
+          - selenium_chrome
+
 volumes:
   db_data_ai_chat:
+  redisinsight_data_ai_chat:
 
 networks:
   ai_chat_back:
-    driver: overlay
+    driver: bridge
     name:   ai_chat_back
   chat_bot:
-    driver: overlay
+    driver: bridge
     name:   chat_bot
-  proxy_main:
-    external: true

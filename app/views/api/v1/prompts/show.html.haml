@@ -1,2 +1,6 @@
+-# app/views/api/v1/prompts/show.html.haml
 %h1
-  = @prompt.content
+  = 'Prompt Content'
+
+- formatted_content = @prompt.content.gsub('\n', "\n")
+= simple_format(formatted_content)
