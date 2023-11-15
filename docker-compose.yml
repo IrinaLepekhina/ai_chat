@@ -55,6 +55,7 @@ services:
     env_file:
       - ./database
       - ./ai_chat
+      - ./open_ai
     networks:
       ai_chat_back:
         aliases:
@@ -91,21 +92,8 @@ services:
         aliases:
           - ai_chat_db
 
-  ai_chat_redisinsight:
-    image: redislabs/redisinsight:1.14.0
-    container_name:  ai_chat_redisinsight
-    ports:
-      - '8001:8001'
-    volumes:
-      - redisinsight_data_ai_chat:/db
-    networks:
-      ai_chat_back:
-        aliases:
-          - ai_chat_redisinsight
-
 volumes:
   db_data_ai_chat:
-  redisinsight_data_ai_chat:
 
 networks:
   ai_chat_back:
