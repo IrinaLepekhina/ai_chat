@@ -10,8 +10,8 @@ describe EmbeddingsAdapter, type: :service do
     it 'delegates to the language service to get embeddings' do
       content = 'This is a sample text.'
 
-      expect(language_service).to receive(:get_embeddings).with(content).and_return('embeddings_data')
-      result = embeddings_adapter.get_embeddings(content)
+      expect(language_service).to receive(:get_embeddings).with(content: content).and_return('embeddings_data')
+      result = embeddings_adapter.get_embeddings(content: content)
 
       expect(result).to eq('embeddings_data')
     end
@@ -20,9 +20,10 @@ describe EmbeddingsAdapter, type: :service do
   describe '#generate_response' do
     it 'delegates to the language service to generate a response' do
       prompt = 'Tell me a joke.'
+      content = 'This is additional content.'
 
-      expect(language_service).to receive(:generate_response).with(prompt).and_return('generated_response')
-      result = embeddings_adapter.generate_response(prompt)
+      expect(language_service).to receive(:generate_response).with(prompt: prompt, content: content).and_return('generated_response')
+      result = embeddings_adapter.generate_response(prompt: prompt, content: content)
 
       expect(result).to eq('generated_response')
     end
