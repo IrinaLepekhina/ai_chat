@@ -23,6 +23,7 @@ build-dev:
   script: 
     - echo "$AI_CHAT" > ai_chat
     - echo "$CHAT_DATABASE" > database
+    - echo "$OPEN_AI" > open_ai
     - docker stack deploy -c docker-compose.yml muul --with-registry-auth
     # - docker image prune -af
   tags:
