@@ -12,10 +12,10 @@ class OpenAiService
     log_info("Generate an AI response using the OpenAI completions API")
     response = @client.completions(
       parameters: {
-        model: "text-davinci-003",
-        prompt: prompt,
-        temperature: 0.2,
-        max_tokens: 500
+        model:       ENV['OPENAI_MODEL']            || "text-davinci-003",
+        temperature: ENV['OPENAI_TEMPERATURE'].to_f || 0.2,
+        max_tokens:  ENV['OPENAI_MAX_TOKENS'].to_i  || 500,
+        prompt:      prompt
       }
     )
 
